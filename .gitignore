@@ -44,3 +44,4 @@ scaler-ai-funnel/
 # Build outputs
 dist/
 build/
+.vercel
