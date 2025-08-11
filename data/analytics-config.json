@@ -1,0 +1,214 @@
+{
+  "trackingEvents": {
+    "pageView": {
+      "name": "page_view",
+      "category": "engagement",
+      "value": 1
+    },
+    "assessmentStarted": {
+      "name": "assessment_started",
+      "category": "conversion",
+      "value": 10
+    },
+    "assessmentStepCompleted": {
+      "name": "assessment_step_completed",
+      "category": "conversion",
+      "value": 5
+    },
+    "assessmentCompleted": {
+      "name": "assessment_completed",
+      "category": "conversion",
+      "value": 50
+    },
+    "leadCaptured": {
+      "name": "lead_captured",
+      "category": "conversion",
+      "value": 100
+    },
+    "emailOpened": {
+      "name": "email_opened",
+      "category": "email",
+      "value": 2
+    },
+    "emailClicked": {
+      "name": "email_clicked",
+      "category": "email",
+      "value": 10
+    },
+    "consultationBooked": {
+      "name": "consultation_booked",
+      "category": "conversion",
+      "value": 500
+    }
+  },
+  
+  "conversionFunnel": [
+    {
+      "stage": "awareness",
+      "name": "Page View",
+      "events": ["page_view"],
+      "description": "User visits the landing page"
+    },
+    {
+      "stage": "interest", 
+      "name": "Engagement",
+      "events": ["scroll_depth_50", "time_on_page_60s"],
+      "description": "User shows interest by engaging with content"
+    },
+    {
+      "stage": "consideration",
+      "name": "Assessment Started",
+      "events": ["assessment_started"],
+      "description": "User begins the career assessment"
+    },
+    {
+      "stage": "intent",
+      "name": "Assessment Completed", 
+      "events": ["assessment_completed"],
+      "description": "User completes the full assessment"
+    },
+    {
+      "stage": "evaluation",
+      "name": "Lead Captured",
+      "events": ["lead_captured"],
+      "description": "User provides contact information"
+    },
+    {
+      "stage": "purchase",
+      "name": "Consultation Booked",
+      "events": ["consultation_booked"],
+      "description": "User books a consultation call"
+    }
+  ],
+  
+  "segmentation": {
+    "careerGoal": {
+      "switch_to_ai": "Career Switchers",
+      "upskill_current": "Skill Upgraders", 
+      "start_tech": "Tech Beginners"
+    },
+    "experience": {
+      "beginner": "0-2 years",
+      "intermediate": "2-5 years",
+      "experienced": "5+ years"
+    },
+    "interest": {
+      "machine_learning": "ML Enthusiasts",
+      "data_science": "Data Scientists",
+      "mlops": "MLOps Engineers"
+    },
+    "learningStyle": {
+      "hands_on": "Practical Learners",
+      "theory_first": "Theory-First",
+      "mentored": "Mentorship Seekers"
+    },
+    "timeline": {
+      "immediately": "Immediate Starters",
+      "within_month": "Short-term Planners",
+      "within_quarter": "Long-term Planners"
+    }
+  },
+  
+  "kpis": {
+    "primary": [
+      {
+        "name": "Blog-to-Lead Conversion Rate",
+        "calculation": "lead_captured / page_view * 100",
+        "target": 8,
+        "baseline": 2.5
+      },
+      {
+        "name": "Assessment Completion Rate", 
+        "calculation": "assessment_completed / assessment_started * 100",
+        "target": 65,
+        "baseline": 40
+      },
+      {
+        "name": "Lead-to-Consultation Rate",
+        "calculation": "consultation_booked / lead_captured * 100", 
+        "target": 25,
+        "baseline": 15
+      },
+      {
+        "name": "Email Engagement Rate",
+        "calculation": "email_clicked / email_opened * 100",
+        "target": 35,
+        "baseline": 22
+      }
+    ],
+    "secondary": [
+      {
+        "name": "Time to Conversion",
+        "description": "Average time from first visit to lead capture",
+        "target": "< 3 days"
+      },
+      {
+        "name": "Lead Quality Score",
+        "description": "AI-calculated score based on assessment responses",
+        "target": "> 70/100"
+      },
+      {
+        "name": "Email Sequence Completion",
+        "description": "Percentage completing all 5 emails",
+        "target": "> 80%"
+      }
+    ]
+  },
+  
+  "aiMetrics": {
+    "contentPersonalization": {
+      "ctaClickRate": "Personalized CTA vs Generic CTA click rates",
+      "recommendationAccuracy": "User acceptance of AI course recommendations",
+      "popupTiming": "Conversion rate based on AI-determined popup timing"
+    },
+    "leadScoring": {
+      "predictionAccuracy": "AI prediction vs actual conversion",
+      "scoringDistribution": "Distribution of lead scores by segment",
+      "qualificationRate": "Percentage of leads qualifying for sales calls"
+    },
+    "emailPersonalization": {
+      "openRateImprovement": "Personalized vs template email open rates",
+      "clickRateImprovement": "Personalized vs template email click rates",
+      "responseGeneration": "AI email generation success rate"
+    }
+  },
+  
+  "dashboardWidgets": [
+    {
+      "type": "metric",
+      "title": "Total Leads",
+      "value": "leadCount",
+      "trend": "last7days"
+    },
+    {
+      "type": "metric", 
+      "title": "Conversion Rate",
+      "value": "conversionRate",
+      "format": "percentage"
+    },
+    {
+      "type": "chart",
+      "title": "Funnel Performance",
+      "chartType": "funnel",
+      "data": "conversionFunnel"
+    },
+    {
+      "type": "chart",
+      "title": "Lead Sources",
+      "chartType": "pie",
+      "data": "leadSources"
+    },
+    {
+      "type": "table",
+      "title": "Recent Leads",
+      "data": "recentLeads",
+      "columns": ["name", "email", "source", "score", "createdAt"]
+    },
+    {
+      "type": "chart",
+      "title": "Email Performance",
+      "chartType": "line",
+      "data": "emailMetrics"
+    }
+  ]
+}

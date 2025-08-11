@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transform Your Career with AI & Data Science | Scaler</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="https://scaler.com/img/logo-white.png" alt="Scaler Logo" class="logo">
+            </div>
+            <div class="nav-menu">
+                <a href="#courses" class="nav-link">Courses</a>
+                <a href="#success-stories" class="nav-link">Success Stories</a>
+                <a href="#about" class="nav-link">About</a>
+                <button class="cta-button nav-cta" onclick="openAssessment()">Free Career Assessment</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        Launch Your <span class="gradient-text">AI Career</span><br>
+                        With Industry Leaders
+                    </h1>
+                    <p class="hero-description" id="dynamic-description">
+                        Join 50,000+ engineers who've transformed their careers with our AI-powered learning paths. Get personalized guidance from FAANG engineers.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">50K+</span>
+                            <span class="stat-label">Successful Careers</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">95%</span>
+                            <span class="stat-label">Job Placement</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">3.2x</span>
+                            <span class="stat-label">Avg Salary Increase</span>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <button class="cta-button primary-cta" id="main-cta" onclick="openAssessment()">
+                            Start Your AI Journey
+                        </button>
+                        <button class="cta-button secondary-cta" onclick="scrollToSection('success-stories')">
+                            <i class="fas fa-play"></i> Watch Success Stories
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="ai-animation">
+                        <div class="floating-card card-1">
+                            <i class="fas fa-brain"></i>
+                            <span>Machine Learning</span>
+                        </div>
+                        <div class="floating-card card-2">
+                            <i class="fas fa-robot"></i>
+                            <span>Deep Learning</span>
+                        </div>
+                        <div class="floating-card card-3">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Data Science</span>
+                        </div>
+                        <div class="floating-card card-4">
+                            <i class="fas fa-code"></i>
+                            <span>MLOps</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI-Powered Recommendation Section -->
+    <section class="recommendations" id="recommendations">
+        <div class="container">
+            <h2>Recommended For You</h2>
+            <p class="section-subtitle">Based on your browsing patterns, here's your personalized learning path:</p>
+            <div class="recommendation-cards" id="recommendation-cards">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Preview Section -->
+    <section class="courses" id="courses">
+        <div class="container">
+            <h2>Our AI & Data Science Programs</h2>
+            <div class="course-grid">
+                <div class="course-card featured">
+                    <div class="course-badge">Most Popular</div>
+                    <div class="course-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI & Machine Learning</h3>
+                    <p>Master the fundamentals and advanced concepts of AI/ML with hands-on projects and mentorship from industry experts.</p>
+                    <div class="course-features">
+                        <div class="feature">
+                            <i class="fas fa-clock"></i>
+                            <span>12 months</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-users"></i>
+                            <span>1:1 Mentorship</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Job Guarantee</span>
+                        </div>
+                    </div>
+                    <button class="course-cta" onclick="openAssessment('ai-ml')">Get Started</button>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Data Science & Analytics</h3>
+                    <p>Transform data into insights with Python, SQL, statistics, and advanced analytics techniques.</p>
+                    <div class="course-features">
+                        <div class="feature">
+                            <i class="fas fa-clock"></i>
+                            <span>10 months</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>Real Projects</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-certificate"></i>
+                            <span>Industry Certified</span>
+                        </div>
+                    </div>
+                    <button class="course-cta" onclick="openAssessment('data-science')">Learn More</button>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>MLOps & Deployment</h3>
+                    <p>Learn to deploy, monitor, and scale machine learning models in production environments.</p>
+                    <div class="course-features">
+                        <div class="feature">
+                            <i class="fas fa-clock"></i>
+                            <span>6 months</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-cloud"></i>
+                            <span>Cloud Platforms</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-tools"></i>
+                            <span>DevOps Tools</span>
+                        </div>
+                    </div>
+                    <button class="course-cta" onclick="openAssessment('mlops')">Explore</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories Section -->
+    <section class="success-stories" id="success-stories">
+        <div class="container">
+            <h2>Success Stories</h2>
+            <p class="section-subtitle">See how our alumni transformed their careers</p>
+            <div class="stories-grid">
+                <div class="story-card">
+                    <div class="story-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Rahul's photo">
+                    </div>
+                    <div class="story-content">
+                        <h4>Rahul Sharma</h4>
+                        <p class="story-role">Software Engineer → AI Engineer at Google</p>
+                        <p class="story-text">"Scaler's AI program helped me transition from web development to machine learning. The mentorship was incredible!"</p>
+                        <div class="story-stats">
+                            <span class="salary-increase">+280% salary increase</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story-card">
+                    <div class="story-avatar">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="Priya's photo">
+                    </div>
+                    <div class="story-content">
+                        <h4>Priya Patel</h4>
+                        <p class="story-role">Data Analyst → Senior Data Scientist at Microsoft</p>
+                        <p class="story-text">"The hands-on projects and real-world experience prepared me perfectly for big tech interviews."</p>
+                        <div class="story-stats">
+                            <span class="salary-increase">+320% salary increase</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story-card">
+                    <div class="story-avatar">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" alt="Arjun's photo">
+                    </div>
+                    <div class="story-content">
+                        <h4>Arjun Mehta</h4>
+                        <p class="story-role">Backend Developer → ML Engineer at Amazon</p>
+                        <p class="story-text">"From zero ML knowledge to landing at Amazon in 10 months. The career support was phenomenal!"</p>
+                        <div class="story-stats">
+                            <span class="salary-increase">+250% salary increase</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Career Assessment Modal -->
+    <div id="assessment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>AI Career Assessment</h3>
+                <span class="close" onclick="closeAssessment()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="assessment-step-1" class="assessment-step active">
+                    <h4>What's your primary career goal?</h4>
+                    <div class="options">
+                        <button class="option-btn" onclick="selectOption('career_goal', 'switch_to_ai')">
+                            Switch to AI/ML from current field
+                        </button>
+                        <button class="option-btn" onclick="selectOption('career_goal', 'upskill_current')">
+                            Upskill in current tech role
+                        </button>
+                        <button class="option-btn" onclick="selectOption('career_goal', 'start_tech')">
+                            Start a career in tech
+                        </button>
+                    </div>
+                </div>
+
+                <div id="assessment-step-2" class="assessment-step">
+                    <h4>What's your current experience level?</h4>
+                    <div class="options">
+                        <button class="option-btn" onclick="selectOption('experience', 'beginner')">
+                            Beginner (0-2 years)
+                        </button>
+                        <button class="option-btn" onclick="selectOption('experience', 'intermediate')">
+                            Intermediate (2-5 years)
+                        </button>
+                        <button class="option-btn" onclick="selectOption('experience', 'experienced')">
+                            Experienced (5+ years)
+                        </button>
+                    </div>
+                </div>
+
+                <div id="assessment-step-3" class="assessment-step">
+                    <h4>Which area interests you most?</h4>
+                    <div class="options">
+                        <button class="option-btn" onclick="selectOption('interest', 'machine_learning')">
+                            Machine Learning & AI
+                        </button>
+                        <button class="option-btn" onclick="selectOption('interest', 'data_science')">
+                            Data Science & Analytics
+                        </button>
+                        <button class="option-btn" onclick="selectOption('interest', 'mlops')">
+                            MLOps & Deployment
+                        </button>
+                    </div>
+                </div>
+
+                <div id="assessment-step-4" class="assessment-step">
+                    <h4>What's your preferred learning style?</h4>
+                    <div class="options">
+                        <button class="option-btn" onclick="selectOption('learning_style', 'hands_on')">
+                            Hands-on projects
+                        </button>
+                        <button class="option-btn" onclick="selectOption('learning_style', 'theory_first')">
+                            Theory then practice
+                        </button>
+                        <button class="option-btn" onclick="selectOption('learning_style', 'mentored')">
+                            Guided mentorship
+                        </button>
+                    </div>
+                </div>
+
+                <div id="assessment-step-5" class="assessment-step">
+                    <h4>When do you want to start?</h4>
+                    <div class="options">
+                        <button class="option-btn" onclick="selectOption('timeline', 'immediately')">
+                            Immediately
+                        </button>
+                        <button class="option-btn" onclick="selectOption('timeline', 'within_month')">
+                            Within a month
+                        </button>
+                        <button class="option-btn" onclick="selectOption('timeline', 'within_quarter')">
+                            Within 3 months
+                        </button>
+                    </div>
+                </div>
+
+                <div id="assessment-results" class="assessment-step">
+                    <div class="results-content">
+                        <h4>Your Personalized Recommendation</h4>
+                        <div id="recommendation-result">
+                            <!-- AI-generated recommendation will appear here -->
+                        </div>
+                        <div class="lead-capture">
+                            <h5>Get Your Complete Career Roadmap</h5>
+                            <p>Enter your details to receive a personalized career roadmap and book a free consultation.</p>
+                            <form id="lead-form">
+                                <input type="text" id="user-name" placeholder="Full Name" required>
+                                <input type="email" id="user-email" placeholder="Email Address" required>
+                                <input type="tel" id="user-phone" placeholder="Phone Number" required>
+                                <button type="submit" class="cta-button primary-cta">
+                                    Book Free Consultation
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="progress-bar">
+                    <div class="progress" id="assessment-progress"></div>
+                </div>
+                <div class="step-indicator">
+                    <span id="current-step">1</span> of <span id="total-steps">5</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Popup -->
+    <div id="smart-popup" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header">
+                <span class="close" onclick="closePopup()">&times;</span>
+            </div>
+            <div class="popup-body">
+                <div class="popup-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h4 id="popup-title">Wait! Don't miss out on your AI career transformation</h4>
+                <p id="popup-message">Based on your interest in AI content, you're perfect for our accelerated program.</p>
+                <div class="popup-offer">
+                    <span class="offer-text">🎯 Free Career Assessment + Personalized Roadmap</span>
+                </div>
+                <button class="cta-button primary-cta" onclick="openAssessmentFromPopup()">
+                    Get My Free Assessment
+                </button>
+                <p class="popup-disclaimer">Takes only 2 minutes • No spam, ever</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img src="https://scaler.com/img/logo-white.png" alt="Scaler Logo" class="footer-logo">
+                    <p>Transforming careers through world-class tech education.</p>
+                </div>
+                <div class="footer-section">
+                    <h5>Programs</h5>
+                    <ul>
+                        <li><a href="#courses">AI & Machine Learning</a></li>
+                        <li><a href="#courses">Data Science</a></li>
+                        <li><a href="#courses">MLOps</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#success-stories">Success Stories</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Support</h5>
+                    <ul>
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Scaler. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="scripts/ai-engine.js"></script>
+    <script src="scripts/script.js"></script>
+</body>
+</html>
