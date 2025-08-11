@@ -334,28 +334,60 @@ NODE_ENV=development
 
 ## 🚀 Deployment
 
-### Production Setup
+### Quick Deploy to Vercel
 
-1. **Environment Configuration**
+**Option 1: Using Deployment Script (Recommended)**
 
-   ```bash
-   NODE_ENV=production
-   OPENAI_API_KEY=your_production_key
-   MONGODB_URI=your_production_database
-   GMAIL_USER=your_production_email
-   GMAIL_APP_PASSWORD=your_production_password
-   ```
+```bash
+# Windows
+deploy.bat
 
-2. **Platform Deployment**
+# Mac/Linux
+./deploy.sh
+```
 
-   - Vercel: `vercel deploy`
-   - Heroku: `git push heroku main`
-   - AWS/GCP: Use provided Docker configuration
+**Option 2: Manual Deployment**
 
-3. **Database Setup**
-   - MongoDB Atlas for cloud deployment
-   - Proper indexing for performance
-   - Backup and recovery configuration
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Login and deploy
+vercel login
+vercel
+```
+
+### Environment Variables Setup
+
+Configure these in Vercel dashboard:
+
+```bash
+# OpenAI API (Optional but recommended)
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Gmail Service (Optional)
+GMAIL_USER=your_gmail_address@gmail.com
+GMAIL_APP_PASSWORD=your_gmail_app_password
+
+# MongoDB (Optional - will use in-memory fallback)
+MONGODB_URI=your_mongodb_atlas_connection_string
+
+# Server Configuration
+NODE_ENV=production
+PORT=3000
+```
+
+### Other Deployment Options
+
+- **Heroku**: `git push heroku main`
+- **AWS/GCP**: Use provided Docker configuration
+- **Railway**: Connect GitHub repository
+
+### Database Setup
+
+- MongoDB Atlas for cloud deployment
+- Proper indexing for performance
+- Backup and recovery configuration
 
 ### Scaling Considerations
 
