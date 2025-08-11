@@ -10,17 +10,26 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <div class="nav-logo">
-                <img src="https://scaler.com/img/logo-white.png" alt="Scaler Logo" class="logo">
+                <span class="logo-text">
+                    <span class="logo-brand">Scaler</span>
+                    <span class="logo-tagline">FunnelMind</span>
+                </span>
             </div>
-            <div class="nav-menu">
-                <a href="#courses" class="nav-link">Courses</a>
-                <a href="#success-stories" class="nav-link">Success Stories</a>
-                <a href="#about" class="nav-link">About</a>
-                <button class="cta-button nav-cta" onclick="openAssessment()">Free Career Assessment</button>
+            <div class="nav-menu" role="menubar">
+                <a href="#courses" class="nav-link" role="menuitem" aria-label="View our courses">Courses</a>
+                <a href="#success-stories" class="nav-link" role="menuitem" aria-label="Read success stories">Success Stories</a>
+                <a href="#about" class="nav-link" role="menuitem" aria-label="Learn about us">About</a>
+                <button class="cta-button nav-cta" onclick="openAssessment()" aria-label="Start free career assessment">Free Career Assessment</button>
             </div>
+            
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle mobile menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
         </div>
     </nav>
 
@@ -224,11 +233,11 @@
     </section>
 
     <!-- AI Career Assessment Modal -->
-    <div id="assessment-modal" class="modal">
+    <div id="assessment-modal" class="modal" role="dialog" aria-labelledby="assessment-title" aria-hidden="true">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>AI Career Assessment</h3>
-                <span class="close" onclick="closeAssessment()">&times;</span>
+                <h3 id="assessment-title">AI Career Assessment</h3>
+                <button class="close" onclick="closeAssessment()" aria-label="Close assessment modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div id="assessment-step-1" class="assessment-step active">
@@ -315,13 +324,23 @@
                         <div class="lead-capture">
                             <h5>Get Your Complete Career Roadmap</h5>
                             <p>Enter your details to receive a personalized career roadmap and book a free consultation.</p>
-                            <form id="lead-form">
-                                <input type="text" id="user-name" placeholder="Full Name" required>
-                                <input type="email" id="user-email" placeholder="Email Address" required>
-                                <input type="tel" id="user-phone" placeholder="Phone Number" required>
-                                <button type="submit" class="cta-button primary-cta">
+                            <form id="lead-form" role="form" aria-label="Contact information form">
+                                <label for="user-name" class="sr-only">Full Name</label>
+                                <input type="text" id="user-name" placeholder="Full Name" required aria-required="true" aria-describedby="name-hint">
+                                <div id="name-hint" class="sr-only">Enter your full name for personalized communication</div>
+                                
+                                <label for="user-email" class="sr-only">Email Address</label>
+                                <input type="email" id="user-email" placeholder="Email Address" required aria-required="true" aria-describedby="email-hint">
+                                <div id="email-hint" class="sr-only">We'll send your career roadmap to this email</div>
+                                
+                                <label for="user-phone" class="sr-only">Phone Number</label>
+                                <input type="tel" id="user-phone" placeholder="Phone Number" required aria-required="true" aria-describedby="phone-hint">
+                                <div id="phone-hint" class="sr-only">Phone number for consultation scheduling</div>
+                                
+                                <button type="submit" class="cta-button primary-cta" aria-describedby="submit-help">
                                     Book Free Consultation
                                 </button>
+                                <div id="submit-help" class="sr-only">Submit form to receive your personalized career roadmap</div>
                             </form>
                         </div>
                     </div>
@@ -361,12 +380,20 @@
         </div>
     </div>
 
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </button>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <img src="https://scaler.com/img/logo-white.png" alt="Scaler Logo" class="footer-logo">
+                    <div class="footer-logo">
+                        <span class="logo-brand">Scaler</span>
+                        <span class="logo-tagline">FunnelMind</span>
+                    </div>
                     <p>Transforming careers through world-class tech education.</p>
                 </div>
                 <div class="footer-section">

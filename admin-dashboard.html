@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scaler-FunnelMind - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            /* Color Variables - Dark Mode (Default) */
+            --primary-blue: #00d4ff;
+            --primary-purple: #667eea;
+            --primary-dark: #764ba2;
+            --bg-primary: #0a0f1c;
+            --bg-secondary: #1a1f3a;
+            --bg-tertiary: #2a2f4a;
+            --bg-card: #1e2139;
+            --text-primary: #ffffff;
+            --text-secondary: #b8c5d1;
+            --text-muted: #8a95a6;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.35);
+            --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Light Mode Variables */
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.2);
+            --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.2);
+            
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: var(--space-xl);
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-2xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .sidebar-title {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-sub {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: -2px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav-item {
+            margin-bottom: var(--space-sm);
+        }
+
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-lg);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-normal);
+            font-weight: 500;
+        }
+
+        .sidebar-nav-link:hover,
+        .sidebar-nav-link.active {
+            background: var(--glass-bg);
+            color: var(--primary-blue);
+            transform: translateX(4px);
+        }
+
+        .sidebar-nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: var(--space-xl);
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-2xl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .main-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .refresh-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .refresh-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: rotate(180deg);
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border: none;
+            color: white;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-normal);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-blue);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-md);
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--glass-bg);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            color: #10b981;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            position: relative;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .chart-period {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Data Table */
+        .data-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: var(--space-xl);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: var(--space-lg);
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            color: var(--text-primary);
+        }
+
+        tr:hover {
+            background: var(--glass-bg);
+        }
+
+        .status-badge {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-new {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .status-contacted {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .status-converted {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-blue);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform var(--transition-normal);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: var(--space-md);
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-header {
+                flex-direction: column;
+                gap: var(--space-md);
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="sidebar-title">
+                    <span class="brand-name">Scaler</span>
+                    <span class="brand-sub">FunnelMind</span>
+                </div>
+            </div>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-nav-item">
+                        <a href="#" class="sidebar-nav-link active">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="#" class="sidebar-nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Leads</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="#" class="sidebar-nav-link">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email Campaigns</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="#" class="sidebar-nav-link">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Analytics</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="#" class="sidebar-nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1 class="main-title">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="refresh-btn" onclick="toggleTheme()" title="Toggle dark/light mode">
+                        <i class="fas fa-moon" id="admin-theme-icon"></i>
+                    </button>
+                    <button class="refresh-btn" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="export-btn" onclick="exportData()">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                </div>
+            </header>
+
+            <!-- Metrics Grid -->
+            <div class="metrics-grid" id="metrics-grid">
+                <!-- Metrics will be populated here -->
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Conversion Funnel</h3>
+                        <select class="chart-period">
+                            <option>Last 7 days</option>
+                            <option>Last 30 days</option>
+                            <option>Last 90 days</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="funnelChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Lead Sources</h3>
+                        <select class="chart-period">
+                            <option>This month</option>
+                            <option>Last month</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="sourceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="data-table">
+                <div class="table-header">
+                    <h3 class="table-title">Recent Leads</h3>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Source</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leads-table-body">
+                            <!-- Leads will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Dashboard Data Management
+        let dashboardData = {};
+        let charts = {};
+
+        // Initialize Dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+            initializeCharts();
+            initializeTheme();
+        });
+
+        // Load Dashboard Data
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/analytics');
+                if (response.ok) {
+                    dashboardData = await response.json();
+                    updateMetrics();
+                    updateCharts();
+                    updateLeadsTable();
+                } else {
+                    throw new Error('Failed to load data');
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                loadFallbackData();
+            }
+        }
+
+        // Load Fallback Data for demo
+        function loadFallbackData() {
+            dashboardData = {
+                pageViews: 1247,
+                assessmentStarts: 89,
+                assessmentCompletions: 67,
+                leadCaptures: 45,
+                conversionRate: 50.56,
+                totalLeads: 45,
+                recentLeads: [
+                    { name: 'John Doe', email: 'john@example.com', createdAt: new Date().toISOString(), source: 'organic' },
+                    { name: 'Jane Smith', email: 'jane@example.com', createdAt: new Date().toISOString(), source: 'social' }
+                ],
+                leadsBySource: { organic: 25, social: 15, direct: 5 },
+                assessmentFunnelData: { started: 89, completed: 67, converted: 45 }
+            };
+            updateMetrics();
+            updateCharts();
+            updateLeadsTable();
+        }
+
+        // Update Metrics Cards
+        function updateMetrics() {
+            const metricsGrid = document.getElementById('metrics-grid');
+            const metrics = [
+                {
+                    icon: 'fas fa-eye',
+                    value: dashboardData.pageViews,
+                    label: 'Page Views',
+                    trend: '+12%',
+                    trendDirection: 'up'
+                },
+                {
+                    icon: 'fas fa-play-circle',
+                    value: dashboardData.assessmentStarts,
+                    label: 'Assessment Starts',
+                    trend: '+8%',
+                    trendDirection: 'up'
+                },
+                {
+                    icon: 'fas fa-check-circle',
+                    value: dashboardData.assessmentCompletions,
+                    label: 'Completions',
+                    trend: '+15%',
+                    trendDirection: 'up'
+                },
+                {
+                    icon: 'fas fa-users',
+                    value: dashboardData.leadCaptures,
+                    label: 'Leads Captured',
+                    trend: '+23%',
+                    trendDirection: 'up'
+                },
+                {
+                    icon: 'fas fa-percentage',
+                    value: dashboardData.conversionRate.toFixed(1) + '%',
+                    label: 'Conversion Rate',
+                    trend: '+5%',
+                    trendDirection: 'up'
+                }
+            ];
+
+            metricsGrid.innerHTML = metrics.map(metric => `
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-icon">
+                            <i class="${metric.icon}"></i>
+                        </div>
+                        <div class="metric-trend trend-${metric.trendDirection}">
+                            <i class="fas fa-arrow-${metric.trendDirection}"></i>
+                            ${metric.trend}
+                        </div>
+                    </div>
+                    <div class="metric-value">${metric.value}</div>
+                    <div class="metric-label">${metric.label}</div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize Charts
+        function initializeCharts() {
+            // Funnel Chart
+            const funnelCtx = document.getElementById('funnelChart').getContext('2d');
+            charts.funnel = new Chart(funnelCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Visitors', 'Assessment Started', 'Assessment Completed', 'Leads Captured'],
+                    datasets: [{
+                        label: 'Conversion Funnel',
+                        data: [100, 75, 55, 35],
+                        backgroundColor: [
+                            'rgba(0, 212, 255, 0.8)',
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(118, 75, 162, 0.8)',
+                            'rgba(16, 185, 129, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgb(0, 212, 255)',
+                            'rgb(102, 126, 234)',
+                            'rgb(118, 75, 162)',
+                            'rgb(16, 185, 129)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#b8c5d1'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#b8c5d1'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Source Chart
+            const sourceCtx = document.getElementById('sourceChart').getContext('2d');
+            charts.source = new Chart(sourceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Organic', 'Social', 'Direct'],
+                    datasets: [{
+                        data: [25, 15, 5],
+                        backgroundColor: [
+                            'rgba(0, 212, 255, 0.8)',
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(118, 75, 162, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgb(0, 212, 255)',
+                            'rgb(102, 126, 234)',
+                            'rgb(118, 75, 162)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#b8c5d1',
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Charts
+        function updateCharts() {
+            if (dashboardData.assessmentFunnelData && charts.funnel) {
+                const funnelData = dashboardData.assessmentFunnelData;
+                charts.funnel.data.datasets[0].data = [
+                    100, // Baseline visitors
+                    Math.round((funnelData.started / 100) * 100),
+                    Math.round((funnelData.completed / 100) * 100),
+                    Math.round((funnelData.converted / 100) * 100)
+                ];
+                charts.funnel.update();
+            }
+
+            if (dashboardData.leadsBySource && charts.source) {
+                const sourceData = dashboardData.leadsBySource;
+                charts.source.data.datasets[0].data = Object.values(sourceData);
+                charts.source.data.labels = Object.keys(sourceData);
+                charts.source.update();
+            }
+        }
+
+        // Update Leads Table
+        function updateLeadsTable() {
+            const tableBody = document.getElementById('leads-table-body');
+            const leads = dashboardData.recentLeads || [];
+
+            tableBody.innerHTML = leads.map(lead => {
+                const date = new Date(lead.createdAt).toLocaleDateString();
+                const status = Math.random() > 0.5 ? 'new' : Math.random() > 0.5 ? 'contacted' : 'converted';
+                const score = Math.floor(Math.random() * 100);
+                
+                return `
+                    <tr>
+                        <td>${lead.name}</td>
+                        <td>${lead.email}</td>
+                        <td>${lead.source || 'direct'}</td>
+                        <td>${date}</td>
+                        <td><span class="status-badge status-${status}">${status}</span></td>
+                        <td>${score}%</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Refresh Data
+        function refreshData() {
+            const refreshBtn = document.querySelector('.refresh-btn');
+            refreshBtn.innerHTML = '<div class="loading"></div>';
+            
+            setTimeout(() => {
+                loadDashboardData();
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+            }, 1000);
+        }
+
+        // Export Data
+        function exportData() {
+            const data = JSON.stringify(dashboardData, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dashboard-data-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Theme Management
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('admin-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (prefersDark) {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+            localStorage.setItem('admin-theme', newTheme);
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const themeIcon = document.getElementById('admin-theme-icon');
+            
+            if (themeIcon) {
+                if (theme === 'dark') {
+                    themeIcon.className = 'fas fa-sun';
+                } else {
+                    themeIcon.className = 'fas fa-moon';
+                }
+            }
+            
+            // Update chart colors if charts exist
+            updateChartColors(theme);
+        }
+
+        function updateChartColors(theme) {
+            const textColor = theme === 'dark' ? '#b8c5d1' : '#475569';
+            const gridColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            
+            Object.values(charts).forEach(chart => {
+                if (chart.options.scales) {
+                    if (chart.options.scales.x) {
+                        chart.options.scales.x.ticks.color = textColor;
+                        chart.options.scales.x.grid.color = gridColor;
+                    }
+                    if (chart.options.scales.y) {
+                        chart.options.scales.y.ticks.color = textColor;
+                        chart.options.scales.y.grid.color = gridColor;
+                    }
+                }
+                if (chart.options.plugins && chart.options.plugins.legend) {
+                    chart.options.plugins.legend.labels.color = textColor;
+                }
+                chart.update();
+            });
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadDashboardData, 30000);
+    </script>
+</body>
+</html>

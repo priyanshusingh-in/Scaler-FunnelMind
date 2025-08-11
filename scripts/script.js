@@ -12,6 +12,7 @@ let totalAssessmentSteps = 5;
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
     setupEventListeners();
+    initializeTheme();
     trackPageView();
 });
 
@@ -59,6 +60,7 @@ function setupEventListeners() {
 function openAssessment(context = 'general') {
     const modal = document.getElementById('assessment-modal');
     modal.style.display = 'block';
+    modal.setAttribute('aria-hidden', 'false');
     
     // Reset assessment
     currentAssessmentStep = 1;
@@ -73,11 +75,18 @@ function openAssessment(context = 'general') {
     
     // Add body class to prevent scrolling
     document.body.style.overflow = 'hidden';
+    
+    // Focus on modal for screen readers
+    modal.focus();
+    
+    // Trap focus within modal
+    trapFocus(modal);
 }
 
 function closeAssessment() {
     const modal = document.getElementById('assessment-modal');
     modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'auto';
     
     // Track event if assessment was incomplete
@@ -87,6 +96,13 @@ function closeAssessment() {
             answers: assessmentAnswers 
         });
     }
+    
+    // Return focus to trigger element
+    const triggerButton = document.querySelector('[onclick*="openAssessment"]');
+    if (triggerButton) triggerButton.focus();
+    
+    // Remove focus trap
+    removeFocusTrap();
 }
 
 function selectOption(questionKey, value) {
@@ -163,16 +179,30 @@ async function showAssessmentResults() {
             setTimeout(async () => {
                 const recommendation = await generateFallbackRecommendation();
                 displayRecommendation(recommendation);
+                // Scroll to top of modal body after results are shown
+                scrollModalToTop();
             }, 1500);
         }
     } catch (error) {
         console.error('Failed to generate recommendation:', error);
         const fallbackRecommendation = await generateFallbackRecommendation();
         displayRecommendation(fallbackRecommendation);
+        // Scroll to top of modal body after results are shown
+        scrollModalToTop();
     }
     
     // Track completion
     trackEvent('assessment_completed', { answers: assessmentAnswers });
+}
+
+function scrollModalToTop() {
+    const modalBody = document.querySelector('.modal-body');
+    if (modalBody) {
+        modalBody.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 }
 
 function displayRecommendation(recommendation) {
@@ -208,6 +238,15 @@ function displayRecommendation(recommendation) {
             
             <div class="personalized-message">
                 <p><em>${recommendation.personalizedMessage}</em></p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+                <button class="cta-button secondary-cta" onclick="scrollToForm()" style="margin-bottom: 1rem;">
+                    <i class="fas fa-arrow-down"></i> Get Your Free Roadmap
+                </button>
+                <p style="color: var(--text-muted); font-size: 0.875rem;">
+                    Scroll down to enter your details and receive your complete career roadmap
+                </p>
             </div>
         </div>
     `;
@@ -343,10 +382,33 @@ function showSuccessMessage() {
         </div>
     `;
     
+    // Scroll to top to show success message
+    scrollModalToTop();
+    
     // Auto-close after delay
     setTimeout(() => {
         closeAssessment();
     }, 5000);
+}
+
+// Helper function to scroll to the lead capture form
+function scrollToForm() {
+    const leadCapture = document.querySelector('.lead-capture');
+    const modalBody = document.querySelector('.modal-body');
+    
+    if (leadCapture && modalBody) {
+        const offsetTop = leadCapture.offsetTop - modalBody.offsetTop - 20;
+        modalBody.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
+        });
+        
+        // Focus on the first input field
+        const firstInput = leadCapture.querySelector('input');
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 300);
+        }
+    }
 }
 
 function showErrorMessage(message) {
@@ -635,6 +697,188 @@ function addAnimationStyles() {
 // Initialize animations
 document.addEventListener('DOMContentLoaded', addAnimationStyles);
 
+// Mobile Navigation
+function toggleMobileMenu() {
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+    
+    mobileToggle.classList.toggle('active');
+    navMenu.classList.toggle('active');
+    
+    // Update ARIA attributes
+    mobileToggle.setAttribute('aria-expanded', !isExpanded);
+    
+    // Prevent body scroll when menu is open
+    if (navMenu.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+        // Focus on first menu item for keyboard users
+        const firstMenuItem = navMenu.querySelector('.nav-link');
+        if (firstMenuItem) firstMenuItem.focus();
+    } else {
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Enhanced scroll handler for navbar
+function handleScroll() {
+    const navbar = document.querySelector('.navbar');
+    
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+    
+    // Trigger animations for elements coming into view
+    animateOnScroll();
+}
+
+// Theme Management
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else if (prefersDark) {
+        setTheme('dark');
+    } else {
+        setTheme('light');
+    }
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            setTheme(e.matches ? 'dark' : 'light');
+        }
+    });
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Track theme change
+    trackEvent('theme_changed', { theme: newTheme });
+}
+
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const themeIcon = document.getElementById('theme-icon');
+    
+    if (themeIcon) {
+        if (theme === 'dark') {
+            themeIcon.className = 'fas fa-sun';
+        } else {
+            themeIcon.className = 'fas fa-moon';
+        }
+    }
+    
+    // Update meta theme color for mobile browsers
+    updateThemeColor(theme);
+}
+
+function updateThemeColor(theme) {
+    let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    
+    if (!metaThemeColor) {
+        metaThemeColor = document.createElement('meta');
+        metaThemeColor.name = 'theme-color';
+        document.head.appendChild(metaThemeColor);
+    }
+    
+    metaThemeColor.content = theme === 'dark' ? '#0a0f1c' : '#f8fafc';
+}
+
+// Accessibility - Focus Management
+let focusableElements = [];
+let firstFocusableElement = null;
+let lastFocusableElement = null;
+
+function trapFocus(element) {
+    const focusableSelectors = [
+        'button:not([disabled])',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        'a[href]',
+        '[tabindex]:not([tabindex="-1"])'
+    ];
+    
+    focusableElements = element.querySelectorAll(focusableSelectors.join(', '));
+    firstFocusableElement = focusableElements[0];
+    lastFocusableElement = focusableElements[focusableElements.length - 1];
+    
+    element.addEventListener('keydown', handleFocusTrap);
+}
+
+function removeFocusTrap() {
+    const modal = document.getElementById('assessment-modal');
+    if (modal) {
+        modal.removeEventListener('keydown', handleFocusTrap);
+    }
+    focusableElements = [];
+    firstFocusableElement = null;
+    lastFocusableElement = null;
+}
+
+function handleFocusTrap(e) {
+    if (e.key === 'Tab') {
+        if (e.shiftKey) {
+            // Shift + Tab
+            if (document.activeElement === firstFocusableElement) {
+                e.preventDefault();
+                lastFocusableElement.focus();
+            }
+        } else {
+            // Tab
+            if (document.activeElement === lastFocusableElement) {
+                e.preventDefault();
+                firstFocusableElement.focus();
+            }
+        }
+    }
+}
+
+// Enhanced keyboard navigation
+function handleKeyPress(event) {
+    // Close modals with Escape key
+    if (event.key === 'Escape') {
+        closeAssessment();
+        closePopup();
+    }
+    
+    // Arrow key navigation for assessment options
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        const activeStep = document.querySelector('.assessment-step.active');
+        if (activeStep) {
+            const options = activeStep.querySelectorAll('.option-btn');
+            const currentIndex = Array.from(options).findIndex(btn => btn === document.activeElement);
+            
+            if (currentIndex !== -1) {
+                event.preventDefault();
+                let nextIndex;
+                
+                if (event.key === 'ArrowDown') {
+                    nextIndex = (currentIndex + 1) % options.length;
+                } else {
+                    nextIndex = (currentIndex - 1 + options.length) % options.length;
+                }
+                
+                options[nextIndex].focus();
+            }
+        }
+    }
+    
+    // Enter key to select option
+    if (event.key === 'Enter' && document.activeElement.classList.contains('option-btn')) {
+        document.activeElement.click();
+    }
+}
+
 // Export functions for global access
 window.openAssessment = openAssessment;
 window.closeAssessment = closeAssessment;
@@ -643,3 +887,6 @@ window.closePopup = closePopup;
 window.openAssessmentFromPopup = openAssessmentFromPopup;
 window.scrollToSection = scrollToSection;
 window.trackEvent = trackEvent;
+window.toggleMobileMenu = toggleMobileMenu;
+window.toggleTheme = toggleTheme;
+window.scrollToForm = scrollToForm;

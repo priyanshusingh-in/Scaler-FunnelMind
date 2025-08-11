@@ -20,6 +20,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Serve static files (CSS, JS, images)
+app.use(express.static('.'));
+
 // Test endpoint for Vercel
 app.get('/test', (req, res) => {
     res.json({ 
@@ -967,102 +970,12 @@ app.get('/health', async (req, res) => {
 });
 
 /**
- * Admin dashboard (simple analytics view)
+ * Admin dashboard (modern interactive dashboard)
  */
 app.get('/admin', async (req, res) => {
     try {
-        const dbStatus = database.getConnectionStatus();
-        let analytics, recentLeads;
-        
-        if (dbStatus.connected) {
-            // Get data from MongoDB
-            analytics = await Analytics.getGlobalAnalytics();
-            recentLeads = await Lead.find()
-                .sort({ createdAt: -1 })
-                .limit(10)
-                .lean();
-        } else {
-            // Use fallback data
-            analytics = fallbackAnalytics;
-            recentLeads = fallbackLeads.slice(-10).reverse();
-        }
-        
-        const adminHTML = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Scaler-FunnelMind - Admin Dashboard</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-                .dashboard { max-width: 1200px; margin: 0 auto; }
-                .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-                .metric-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-                .metric-value { font-size: 2em; font-weight: bold; color: #00d4ff; }
-                .metric-label { color: #666; margin-top: 5px; }
-                .leads-table { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-                .leads-table table { width: 100%; border-collapse: collapse; }
-                .leads-table th, .leads-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-                .leads-table th { background: #f8f9fa; font-weight: 600; }
-            </style>
-        </head>
-        <body>
-            <div class="dashboard">
-                <h1>Scaler-FunnelMind Dashboard</h1>
-                
-                <div class="metrics">
-                    <div class="metric-card">
-                        <div class="metric-value">${analytics.pageViews}</div>
-                        <div class="metric-label">Page Views</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">${analytics.assessmentStarts}</div>
-                        <div class="metric-label">Assessment Starts</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">${analytics.assessmentCompletions}</div>
-                        <div class="metric-label">Assessments Completed</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">${analytics.leadCaptures}</div>
-                        <div class="metric-label">Leads Captured</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">${analytics.conversionRate.toFixed(2)}%</div>
-                        <div class="metric-label">Conversion Rate</div>
-                    </div>
-                </div>
-                
-                <div class="leads-table">
-                    <h2>Recent Leads</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Created</th>
-                                <th>Source</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${recentLeads.map(lead => `
-                                <tr>
-                                    <td>${lead.name}</td>
-                                    <td>${lead.email}</td>
-                                    <td>${new Date(lead.createdAt).toLocaleString()}</td>
-                                    <td>${lead.assessmentAnswers?.context || 'direct'}</td>
-                                    <td>${lead.status}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </body>
-        </html>
-        `;
-        
-        res.send(adminHTML);
+        // Serve the modern admin dashboard HTML file
+        res.sendFile(path.join(__dirname, 'admin-dashboard.html'));
     } catch (error) {
         console.error('Admin dashboard error:', error);
         res.status(500).send('<h1>Error loading dashboard</h1><p>Please check server logs.</p>');
