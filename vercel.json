@@ -4,12 +4,40 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "styles/*",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "components/*",
+      "use": "@vercel/static"
     }
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/api/(.*)",
       "destination": "/server.js"
+    },
+    {
+      "source": "/admin",
+      "destination": "/server.js"
+    },
+    {
+      "source": "/health",
+      "destination": "/server.js"
+    },
+    {
+      "source": "/test",
+      "destination": "/server.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
