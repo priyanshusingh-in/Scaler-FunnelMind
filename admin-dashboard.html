@@ -27,6 +27,23 @@
             --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.25);
             --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.35);
             --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.3);
+            
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            
+            /* Transitions */
+            --transition-normal: 0.3s ease;
         }
 
         /* Light Mode Variables */
@@ -53,6 +70,7 @@
             --space-lg: 1.5rem;
             --space-xl: 2rem;
             --space-2xl: 3rem;
+            --space-3xl: 4rem;
             
             /* Border Radius */
             --radius-sm: 8px;
@@ -73,16 +91,17 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         .dashboard-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
+            position: relative;
             min-height: 100vh;
+            width: 100%;
         }
 
         /* Sidebar */
@@ -161,6 +180,23 @@
             border-radius: var(--radius-md);
             transition: all var(--transition-normal);
             font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,212,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .sidebar-nav-link:hover::before {
+            left: 100%;
         }
 
         .sidebar-nav-link:hover,
@@ -168,6 +204,12 @@
             background: var(--glass-bg);
             color: var(--primary-blue);
             transform: translateX(4px);
+            border-left: 3px solid var(--primary-blue);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+        }
+
+        .sidebar-nav-link.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(102, 126, 234, 0.1));
         }
 
         .sidebar-nav-link i {
@@ -178,22 +220,57 @@
         /* Main Content */
         .main-content {
             margin-left: 280px;
-            padding: var(--space-xl);
+            padding: var(--space-2xl);
+            background: var(--bg-primary);
+            min-height: 100vh;
+            width: calc(100vw - 280px);
+            overflow-x: hidden;
+            position: relative;
         }
 
         .main-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-2xl);
-            padding-bottom: var(--space-lg);
-            border-bottom: 1px solid var(--border-color);
+            margin-bottom: var(--space-3xl);
+            padding: var(--space-xl);
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--primary-blue);
+            color: white;
         }
 
         .main-title {
-            font-size: 2rem;
+            font-size: 2.25rem;
             font-weight: 800;
             color: var(--text-primary);
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .header-actions {
@@ -234,12 +311,91 @@
             box-shadow: var(--shadow-glow);
         }
 
+        /* Dashboard Sections */
+        .dashboard-section {
+            margin-bottom: var(--space-3xl);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-xl);
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            padding-left: var(--space-md);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .section-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: var(--space-md);
+            color: var(--text-secondary);
+            z-index: 1;
+        }
+
+        .search-box input {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-md) var(--space-md) var(--space-md) 2.5rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            min-width: 200px;
+            transition: all var(--transition-normal);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .section-actions select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            min-width: 120px;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .section-actions select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
         /* Metrics Grid */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--space-xl);
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
             margin-bottom: var(--space-2xl);
+            width: 100%;
         }
 
         .metric-card {
@@ -250,10 +406,11 @@
             position: relative;
             overflow: hidden;
             transition: all var(--transition-normal);
+            cursor: pointer;
         }
 
         .metric-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-6px);
             box-shadow: var(--shadow-lg);
             border-color: var(--primary-blue);
         }
@@ -266,6 +423,21 @@
             right: 0;
             height: 4px;
             background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+        }
+
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,212,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .metric-card:hover::after {
+            left: 100%;
         }
 
         .metric-header {
@@ -308,6 +480,10 @@
             font-weight: 800;
             color: var(--text-primary);
             margin-bottom: var(--space-xs);
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .metric-label {
@@ -316,12 +492,89 @@
             font-weight: 500;
         }
 
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+            padding: var(--space-lg);
+            background: var(--glass-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            width: 100%;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            min-height: 80px;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-blue);
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,212,255,0.05), transparent);
+            transition: left 0.4s;
+        }
+
+        .action-card:hover::before {
+            left: 100%;
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .action-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .action-content p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
         /* Charts Grid */
         .charts-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: var(--space-xl);
+            gap: var(--space-lg);
             margin-bottom: var(--space-2xl);
+            min-height: 400px;
+            width: 100%;
         }
 
         .chart-card {
@@ -330,6 +583,13 @@
             border-radius: var(--radius-lg);
             padding: var(--space-xl);
             position: relative;
+            transition: all var(--transition-normal);
+        }
+
+        .chart-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-blue);
         }
 
         .chart-header {
@@ -365,21 +625,38 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
         }
 
-        .table-header {
-            padding: var(--space-xl);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .table-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-primary);
+        .data-table:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-blue);
         }
 
         .table-container {
             overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: var(--radius-sm);
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-blue);
         }
 
         table {
@@ -400,14 +677,23 @@
             font-size: 0.875rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         td {
             color: var(--text-primary);
+            transition: all var(--transition-normal);
         }
 
         tr:hover {
             background: var(--glass-bg);
+            transform: scale(1.01);
+        }
+
+        tr:hover td {
+            color: var(--primary-blue);
         }
 
         .status-badge {
@@ -433,6 +719,208 @@
             color: #a78bfa;
         }
 
+        .status-qualified {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        /* Source and Score Badge Styles */
+        .source-badge, .score-badge {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .source-badge.website {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .source-badge.referral {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .source-badge.linkedin {
+            background: rgba(14, 165, 233, 0.1);
+            color: #0ea5e9;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+        }
+
+        .source-badge.google {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .score-badge.score-high {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .score-badge.score-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .score-badge.score-low {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* Table Enhancements */
+        .action-buttons {
+            display: flex;
+            gap: var(--space-xs);
+            align-items: center;
+        }
+
+        .action-btn {
+            padding: var(--space-xs) var(--space-sm);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .action-btn.view {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .action-btn.edit {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Pagination */
+        .table-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-lg);
+            padding: var(--space-lg);
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .pagination-info {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .pagination-btn {
+            padding: var(--space-sm) var(--space-md);
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-number {
+            padding: var(--space-sm) var(--space-md);
+            margin: 0 var(--space-xs);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .page-number.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .page-number:hover:not(.active) {
+            background: var(--glass-bg);
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            margin-top: var(--space-lg);
+            padding: var(--space-lg);
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .bulk-btn {
+            padding: var(--space-sm) var(--space-lg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            font-size: 0.875rem;
+        }
+
+        .bulk-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .bulk-btn.danger {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .bulk-btn.danger:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        #selected-count {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-right: auto;
+        }
+
         /* Loading Animation */
         .loading {
             display: inline-block;
@@ -448,15 +936,305 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Additional Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .metric-card.loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: var(--space-xl);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: var(--space-sm);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-normal);
+        }
+
+        .modal-close:hover {
+            background: var(--glass-bg);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: var(--space-xl);
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: var(--space-xl);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-lg);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: var(--space-md);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            transition: all var(--transition-normal);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: var(--space-md) var(--space-lg);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            min-width: 300px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            animation: toastSlideIn 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .toast.success::before {
+            background: #10b981;
+        }
+
+        .toast.error::before {
+            background: #ef4444;
+        }
+
+        .toast.warning::before {
+            background: #f59e0b;
+        }
+
+        .toast.info::before {
+            background: var(--primary-blue);
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes toastSlideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+            font-size: 0.875rem;
+        }
+
+        .toast-message {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-normal);
+        }
+
+        .toast-close:hover {
+            background: var(--glass-bg);
+            color: var(--text-primary);
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-            }
-            
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform var(--transition-normal);
+                z-index: 1000;
             }
             
             .sidebar.open {
@@ -465,26 +1243,100 @@
             
             .main-content {
                 margin-left: 0;
+                width: 100vw;
+                padding: var(--space-lg);
             }
             
             .charts-grid {
                 grid-template-columns: 1fr;
+                gap: var(--space-lg);
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+                gap: var(--space-md);
+                padding: var(--space-md);
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: var(--space-lg);
             }
         }
 
         @media (max-width: 768px) {
             .main-content {
                 padding: var(--space-md);
+                width: 100vw;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .main-title {
+                font-size: 1.75rem;
             }
             
             .metrics-grid {
                 grid-template-columns: 1fr;
+                gap: var(--space-md);
             }
             
             .main-header {
                 flex-direction: column;
                 gap: var(--space-md);
                 align-items: flex-start;
+                padding: var(--space-lg);
+            }
+            
+            .header-left {
+                width: 100%;
+            }
+            
+            .header-actions {
+                flex-wrap: wrap;
+                gap: var(--space-sm);
+                width: 100%;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+                gap: var(--space-md);
+                padding: var(--space-md);
+            }
+            
+            .action-card {
+                flex-direction: row;
+                gap: var(--space-md);
+                min-height: 60px;
+            }
+            
+            .action-content h4 {
+                font-size: 0.9rem;
+            }
+            
+            .action-content p {
+                font-size: 0.75rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-md);
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                gap: var(--space-sm);
+                align-items: flex-start;
+            }
+            
+            .table-container {
+                font-size: 0.875rem;
+            }
+            
+            th, td {
+                padding: var(--space-md);
             }
         }
     </style>
@@ -542,7 +1394,12 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="main-header">
-                <h1 class="main-title">Dashboard</h1>
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" title="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="main-title">Dashboard</h1>
+                </div>
                 <div class="header-actions">
                     <button class="refresh-btn" onclick="toggleTheme()" title="Toggle dark/light mode">
                         <i class="fas fa-moon" id="admin-theme-icon"></i>
@@ -557,78 +1414,304 @@
                 </div>
             </header>
 
-            <!-- Metrics Grid -->
-            <div class="metrics-grid" id="metrics-grid">
-                <!-- Metrics will be populated here -->
-            </div>
-
-            <!-- Charts Grid -->
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3 class="chart-title">Conversion Funnel</h3>
-                        <select class="chart-period">
-                            <option>Last 7 days</option>
-                            <option>Last 30 days</option>
-                            <option>Last 90 days</option>
-                        </select>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="funnelChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3 class="chart-title">Lead Sources</h3>
-                        <select class="chart-period">
-                            <option>This month</option>
-                            <option>Last month</option>
-                        </select>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="sourceChart"></canvas>
-                    </div>
+            <!-- Metrics Section -->
+            <div class="dashboard-section">
+                <h2 class="section-title">Key Performance Metrics</h2>
+                <div class="metrics-grid" id="metrics-grid">
+                    <!-- Metrics will be populated here -->
                 </div>
             </div>
 
-            <!-- Data Table -->
-            <div class="data-table">
-                <div class="table-header">
-                    <h3 class="table-title">Recent Leads</h3>
+            <!-- Quick Actions Section -->
+            <div class="dashboard-section">
+                <h2 class="section-title">Quick Actions</h2>
+                <div class="quick-actions">
+                    <div class="action-card" onclick="refreshData()">
+                        <div class="action-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="action-content">
+                            <h4>Refresh Data</h4>
+                            <p>Update all metrics</p>
+                        </div>
+                    </div>
+                    <div class="action-card" onclick="viewAllLeads()">
+                        <div class="action-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="action-content">
+                            <h4>View All Leads</h4>
+                            <p>Manage lead pipeline</p>
+                        </div>
+                    </div>
+                    <div class="action-card" onclick="generateReport()">
+                        <div class="action-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="action-content">
+                            <h4>Generate Report</h4>
+                            <p>Download analytics</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Source</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Score</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leads-table-body">
-                            <!-- Leads will be populated here -->
-                        </tbody>
-                    </table>
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="dashboard-section">
+                <h2 class="section-title">Analytics Overview</h2>
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Conversion Funnel</h3>
+                            <select class="chart-period">
+                                <option>Last 7 days</option>
+                                <option>Last 30 days</option>
+                                <option>Last 90 days</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="funnelChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Lead Sources</h3>
+                            <select class="chart-period">
+                                <option>This month</option>
+                                <option>Last month</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="sourceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Leads Management Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">Lead Management</h2>
+                    <div class="section-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="lead-search" placeholder="Search leads..." onkeyup="filterLeads()">
+                        </div>
+                        <select id="status-filter" onchange="filterLeads()">
+                            <option value="">All Status</option>
+                            <option value="new">New</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="qualified">Qualified</option>
+                            <option value="converted">Converted</option>
+                        </select>
+                        <select id="source-filter" onchange="filterLeads()">
+                            <option value="">All Sources</option>
+                            <option value="website">Website</option>
+                            <option value="referral">Referral</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="google">Google Ads</option>
+                        </select>
+                        <button class="refresh-btn" onclick="exportLeads()">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="data-table">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                                    </th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Source</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leads-table-body">
+                                <!-- Leads will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="table-pagination">
+                    <div class="pagination-info">
+                        <span id="pagination-info">Showing 1-10 of 50 leads</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn" onclick="changePage('prev')" id="prev-btn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="page-numbers"></span>
+                        <button class="pagination-btn" onclick="changePage('next')" id="next-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bulk-actions" id="bulk-actions" style="display: none;">
+                    <span id="selected-count">0 selected</span>
+                    <button class="bulk-btn" onclick="bulkUpdateStatus('contacted')">Mark as Contacted</button>
+                    <button class="bulk-btn" onclick="bulkUpdateStatus('qualified')">Mark as Qualified</button>
+                    <button class="bulk-btn danger" onclick="bulkDelete()">Delete Selected</button>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- Lead Management Modal -->
+    <div id="leadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="leadModalTitle">Lead Details</h3>
+                <button class="modal-close" onclick="closeModal('leadModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="leadForm">
+                    <input type="hidden" id="leadId">
+                    <div class="form-group">
+                        <label class="form-label" for="leadName">Name</label>
+                        <input type="text" id="leadName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="leadEmail">Email</label>
+                        <input type="email" id="leadEmail" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="leadPhone">Phone</label>
+                        <input type="tel" id="leadPhone" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="leadSource">Source</label>
+                        <select id="leadSource" class="form-select">
+                            <option value="website">Website</option>
+                            <option value="referral">Referral</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="google">Google Ads</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="leadStatus">Status</label>
+                        <select id="leadStatus" class="form-select">
+                            <option value="new">New</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="qualified">Qualified</option>
+                            <option value="converted">Converted</option>
+                            <option value="lost">Lost</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="leadScore">Lead Score</label>
+                        <input type="number" id="leadScore" class="form-input" min="0" max="100" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="leadNotes">Notes</label>
+                        <textarea id="leadNotes" class="form-textarea" placeholder="Add notes about this lead..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('leadModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveLead()">
+                    <i class="fas fa-save"></i>
+                    Save Lead
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Delete</h3>
+                <button class="modal-close" onclick="closeModal('deleteModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteMessage">Are you sure you want to delete this item? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                    <i class="fas fa-trash"></i>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Campaign Modal -->
+    <div id="emailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Send Email Campaign</h3>
+                <button class="modal-close" onclick="closeModal('emailModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="emailForm">
+                    <div class="form-group">
+                        <label class="form-label" for="emailSubject">Subject</label>
+                        <input type="text" id="emailSubject" class="form-input" placeholder="Enter email subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="emailTemplate">Template</label>
+                        <select id="emailTemplate" class="form-select">
+                            <option value="welcome">Welcome Email</option>
+                            <option value="follow-up">Follow-up Email</option>
+                            <option value="newsletter">Newsletter</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="emailContent">Content</label>
+                        <textarea id="emailContent" class="form-textarea" rows="8" placeholder="Write your email content here..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="emailRecipients">Recipients</label>
+                        <select id="emailRecipients" class="form-select">
+                            <option value="all">All Leads</option>
+                            <option value="new">New Leads</option>
+                            <option value="contacted">Contacted Leads</option>
+                            <option value="qualified">Qualified Leads</option>
+                            <option value="selected">Selected Leads</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('emailModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="sendEmailCampaign()">
+                    <i class="fas fa-paper-plane"></i>
+                    Send Campaign
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <script>
         // Dashboard Data Management
         let dashboardData = {};
         let charts = {};
 
-        // Initialize Dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDashboardData();
-            initializeCharts();
-            initializeTheme();
-        });
+        // Dashboard initialization is handled at the bottom with enhanced features
 
         // Load Dashboard Data
         async function loadDashboardData() {
@@ -912,6 +1995,24 @@
             localStorage.setItem('admin-theme', newTheme);
         }
 
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (window.innerWidth <= 1024 && sidebar.classList.contains('open')) {
+                if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             const themeIcon = document.getElementById('admin-theme-icon');
@@ -949,6 +2050,595 @@
                 chart.update();
             });
         }
+
+        // Action Card Functions
+        function viewAllLeads() {
+            console.log('Viewing all leads...');
+            // Could redirect to leads page or open modal
+            alert('Redirecting to leads management...');
+        }
+
+        function generateReport() {
+            console.log('Generating comprehensive report...');
+            const reportData = {
+                dashboard: dashboardData,
+                generatedAt: new Date().toISOString(),
+                reportType: 'comprehensive'
+            };
+            
+            const csvContent = generateCSVReport(reportData);
+            downloadFile(csvContent, `scaler-report-${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+        }
+
+        function generateCSVReport(data) {
+            const csvRows = [];
+            
+            // Headers
+            csvRows.push(['Metric', 'Value', 'Trend']);
+            
+            // Data rows
+            csvRows.push(['Page Views', data.dashboard.pageViews || 0, '+12%']);
+            csvRows.push(['Assessment Starts', data.dashboard.assessmentStarts || 0, '+8%']);
+            csvRows.push(['Assessment Completions', data.dashboard.assessmentCompletions || 0, '+15%']);
+            csvRows.push(['Leads Captured', data.dashboard.leadCaptures || 0, '+23%']);
+            csvRows.push(['Conversion Rate', (data.dashboard.conversionRate || 0).toFixed(2) + '%', '+5%']);
+            
+            return csvRows.map(row => row.join(',')).join('\n');
+        }
+
+        function downloadFile(content, fileName, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Enhanced refresh with visual feedback
+        function refreshData() {
+            const refreshBtns = document.querySelectorAll('.refresh-btn, .action-card');
+            refreshBtns.forEach(btn => {
+                if (btn.innerHTML.includes('sync') || btn.innerHTML.includes('Refresh')) {
+                    const icon = btn.querySelector('i') || btn.querySelector('.action-icon i');
+                    if (icon) {
+                        icon.style.animation = 'spin 1s linear infinite';
+                    }
+                }
+            });
+            
+            loadDashboardData().then(() => {
+                setTimeout(() => {
+                    refreshBtns.forEach(btn => {
+                        const icon = btn.querySelector('i') || btn.querySelector('.action-icon i');
+                        if (icon) {
+                            icon.style.animation = '';
+                        }
+                    });
+                }, 1000);
+            });
+        }
+
+        // Add click handlers to metric cards for drill-down
+        function addMetricClickHandlers() {
+            document.addEventListener('click', (e) => {
+                const metricCard = e.target.closest('.metric-card');
+                if (metricCard) {
+                    const metricLabel = metricCard.querySelector('.metric-label').textContent;
+                    console.log(`Drilling down into: ${metricLabel}`);
+                    // Could open detailed view modal
+                }
+            });
+        }
+
+        // Enhanced Lead Management
+        let allLeads = [];
+        let filteredLeads = [];
+        let currentPage = 1;
+        let leadsPerPage = 10;
+        let selectedLeads = new Set();
+        let deleteCallback = null;
+
+        function generateSampleLeads() {
+            const names = ['John Smith', 'Sarah Johnson', 'Mike Wilson', 'Emma Davis', 'Alex Chen', 
+                          'Lisa Brown', 'David Miller', 'Kate Anderson', 'Tom Wilson', 'Anna Garcia',
+                          'Robert Taylor', 'Jennifer Lee', 'Michael Clark', 'Amanda White', 'Steve Rogers'];
+            const sources = ['website', 'referral', 'linkedin', 'google'];
+            const statuses = ['new', 'contacted', 'qualified', 'converted'];
+            
+            allLeads = [];
+            for (let i = 0; i < 50; i++) {
+                const randomDate = new Date();
+                randomDate.setDate(randomDate.getDate() - Math.floor(Math.random() * 30));
+                
+                allLeads.push({
+                    id: i + 1,
+                    name: names[Math.floor(Math.random() * names.length)],
+                    email: `user${i + 1}@example.com`,
+                    phone: `+1-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+                    source: sources[Math.floor(Math.random() * sources.length)],
+                    status: statuses[Math.floor(Math.random() * statuses.length)],
+                    score: Math.floor(Math.random() * 41) + 60, // 60-100
+                    date: randomDate.toISOString().split('T')[0],
+                    notes: `Notes for ${names[Math.floor(Math.random() * names.length)]}`
+                });
+            }
+            filteredLeads = [...allLeads];
+        }
+
+        function populateLeadsTable() {
+            generateSampleLeads();
+            renderLeadsTable();
+            updatePagination();
+        }
+
+        function renderLeadsTable() {
+            const tableBody = document.getElementById('leads-table-body');
+            if (!tableBody) return;
+
+            const startIndex = (currentPage - 1) * leadsPerPage;
+            const endIndex = startIndex + leadsPerPage;
+            const currentLeads = filteredLeads.slice(startIndex, endIndex);
+
+            tableBody.innerHTML = currentLeads.map(lead => `
+                <tr>
+                    <td>
+                        <input type="checkbox" class="lead-checkbox" value="${lead.id}" 
+                               onchange="toggleLeadSelection(${lead.id})"
+                               ${selectedLeads.has(lead.id) ? 'checked' : ''}>
+                    </td>
+                    <td><strong>${lead.name}</strong></td>
+                    <td>${lead.email}</td>
+                    <td><span class="source-badge ${lead.source}">${lead.source.charAt(0).toUpperCase() + lead.source.slice(1)}</span></td>
+                    <td>${new Date(lead.date).toLocaleDateString()}</td>
+                    <td><span class="status-badge status-${lead.status}">${lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}</span></td>
+                    <td><span class="score-badge score-${lead.score >= 90 ? 'high' : lead.score >= 75 ? 'medium' : 'low'}">${lead.score}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view" onclick="viewLead(${lead.id})" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn edit" onclick="editLead(${lead.id})" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="deleteLead(${lead.id})" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Filtering and Search
+        function filterLeads() {
+            const searchTerm = document.getElementById('lead-search').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const sourceFilter = document.getElementById('source-filter').value;
+
+            filteredLeads = allLeads.filter(lead => {
+                const matchesSearch = lead.name.toLowerCase().includes(searchTerm) || 
+                                    lead.email.toLowerCase().includes(searchTerm);
+                const matchesStatus = !statusFilter || lead.status === statusFilter;
+                const matchesSource = !sourceFilter || lead.source === sourceFilter;
+                
+                return matchesSearch && matchesStatus && matchesSource;
+            });
+
+            currentPage = 1; // Reset to first page
+            renderLeadsTable();
+            updatePagination();
+        }
+
+        // Pagination Functions
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredLeads.length / leadsPerPage);
+            const paginationInfo = document.getElementById('pagination-info');
+            const pageNumbers = document.getElementById('page-numbers');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (paginationInfo) {
+                const start = (currentPage - 1) * leadsPerPage + 1;
+                const end = Math.min(currentPage * leadsPerPage, filteredLeads.length);
+                paginationInfo.textContent = `Showing ${start}-${end} of ${filteredLeads.length} leads`;
+            }
+
+            if (prevBtn) prevBtn.disabled = currentPage === 1;
+            if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+
+            if (pageNumbers) {
+                pageNumbers.innerHTML = '';
+                const maxVisiblePages = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('span');
+                    pageBtn.className = `page-number ${i === currentPage ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.onclick = () => changePage(i);
+                    pageNumbers.appendChild(pageBtn);
+                }
+            }
+        }
+
+        function changePage(page) {
+            if (typeof page === 'string') {
+                if (page === 'prev' && currentPage > 1) {
+                    currentPage--;
+                } else if (page === 'next') {
+                    const totalPages = Math.ceil(filteredLeads.length / leadsPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                    }
+                }
+            } else {
+                currentPage = page;
+            }
+            renderLeadsTable();
+            updatePagination();
+        }
+
+        // Selection Management
+        function toggleLeadSelection(leadId) {
+            if (selectedLeads.has(leadId)) {
+                selectedLeads.delete(leadId);
+            } else {
+                selectedLeads.add(leadId);
+            }
+            updateBulkActionsVisibility();
+            updateSelectAllCheckbox();
+        }
+
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const currentPageLeads = getCurrentPageLeads();
+            
+            if (selectAllCheckbox.checked) {
+                currentPageLeads.forEach(lead => selectedLeads.add(lead.id));
+            } else {
+                currentPageLeads.forEach(lead => selectedLeads.delete(lead.id));
+            }
+            
+            renderLeadsTable();
+            updateBulkActionsVisibility();
+        }
+
+        function getCurrentPageLeads() {
+            const startIndex = (currentPage - 1) * leadsPerPage;
+            const endIndex = startIndex + leadsPerPage;
+            return filteredLeads.slice(startIndex, endIndex);
+        }
+
+        function updateSelectAllCheckbox() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const currentPageLeads = getCurrentPageLeads();
+            const selectedOnPage = currentPageLeads.filter(lead => selectedLeads.has(lead.id));
+            
+            if (selectedOnPage.length === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            } else if (selectedOnPage.length === currentPageLeads.length) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = true;
+            }
+        }
+
+        function updateBulkActionsVisibility() {
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCount = document.getElementById('selected-count');
+            
+            if (selectedLeads.size > 0) {
+                bulkActions.style.display = 'flex';
+                selectedCount.textContent = `${selectedLeads.size} selected`;
+            } else {
+                bulkActions.style.display = 'none';
+            }
+        }
+
+        // Modal Management
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Lead CRUD Operations
+        function viewLead(leadId) {
+            const lead = allLeads.find(l => l.id === leadId);
+            if (!lead) return;
+
+            document.getElementById('leadModalTitle').textContent = 'View Lead';
+            fillLeadForm(lead);
+            
+            // Make form readonly
+            const formElements = document.querySelectorAll('#leadForm input, #leadForm select, #leadForm textarea');
+            formElements.forEach(el => el.disabled = true);
+            
+            // Hide save button
+            document.querySelector('#leadModal .btn-primary').style.display = 'none';
+            
+            openModal('leadModal');
+        }
+
+        function editLead(leadId) {
+            const lead = allLeads.find(l => l.id === leadId);
+            if (!lead) return;
+
+            document.getElementById('leadModalTitle').textContent = 'Edit Lead';
+            fillLeadForm(lead);
+            
+            // Make form editable
+            const formElements = document.querySelectorAll('#leadForm input, #leadForm select, #leadForm textarea');
+            formElements.forEach(el => el.disabled = false);
+            
+            // Show save button
+            document.querySelector('#leadModal .btn-primary').style.display = 'inline-flex';
+            
+            openModal('leadModal');
+        }
+
+        function fillLeadForm(lead) {
+            document.getElementById('leadId').value = lead.id;
+            document.getElementById('leadName').value = lead.name;
+            document.getElementById('leadEmail').value = lead.email;
+            document.getElementById('leadPhone').value = lead.phone || '';
+            document.getElementById('leadSource').value = lead.source;
+            document.getElementById('leadStatus').value = lead.status;
+            document.getElementById('leadScore').value = lead.score;
+            document.getElementById('leadNotes').value = lead.notes || '';
+        }
+
+        function saveLead() {
+            const leadId = parseInt(document.getElementById('leadId').value);
+            const updatedLead = {
+                id: leadId,
+                name: document.getElementById('leadName').value,
+                email: document.getElementById('leadEmail').value,
+                phone: document.getElementById('leadPhone').value,
+                source: document.getElementById('leadSource').value,
+                status: document.getElementById('leadStatus').value,
+                score: parseInt(document.getElementById('leadScore').value),
+                notes: document.getElementById('leadNotes').value,
+                date: allLeads.find(l => l.id === leadId)?.date || new Date().toISOString().split('T')[0]
+            };
+
+            // Update the lead in the array
+            const index = allLeads.findIndex(l => l.id === leadId);
+            if (index !== -1) {
+                allLeads[index] = updatedLead;
+                filterLeads(); // Refresh the filtered list
+                showToast('success', 'Lead Updated', 'Lead has been updated successfully.');
+            }
+
+            closeModal('leadModal');
+        }
+
+        function deleteLead(leadId) {
+            const lead = allLeads.find(l => l.id === leadId);
+            if (!lead) return;
+
+            document.getElementById('deleteMessage').textContent = 
+                `Are you sure you want to delete "${lead.name}"? This action cannot be undone.`;
+            
+            deleteCallback = () => {
+                const index = allLeads.findIndex(l => l.id === leadId);
+                if (index !== -1) {
+                    allLeads.splice(index, 1);
+                    selectedLeads.delete(leadId);
+                    filterLeads();
+                    showToast('success', 'Lead Deleted', 'Lead has been deleted successfully.');
+                }
+            };
+            
+            openModal('deleteModal');
+        }
+
+        function confirmDelete() {
+            if (deleteCallback) {
+                deleteCallback();
+                deleteCallback = null;
+            }
+            closeModal('deleteModal');
+        }
+
+        // Bulk Operations
+        function bulkUpdateStatus(newStatus) {
+            if (selectedLeads.size === 0) return;
+
+            const updateCount = selectedLeads.size;
+            selectedLeads.forEach(leadId => {
+                const lead = allLeads.find(l => l.id === leadId);
+                if (lead) {
+                    lead.status = newStatus;
+                }
+            });
+
+            selectedLeads.clear();
+            filterLeads();
+            showToast('success', 'Bulk Update', `${updateCount} leads updated to ${newStatus}.`);
+        }
+
+        function bulkDelete() {
+            if (selectedLeads.size === 0) return;
+
+            document.getElementById('deleteMessage').textContent = 
+                `Are you sure you want to delete ${selectedLeads.size} selected leads? This action cannot be undone.`;
+            
+            deleteCallback = () => {
+                selectedLeads.forEach(leadId => {
+                    const index = allLeads.findIndex(l => l.id === leadId);
+                    if (index !== -1) {
+                        allLeads.splice(index, 1);
+                    }
+                });
+                
+                const deletedCount = selectedLeads.size;
+                selectedLeads.clear();
+                filterLeads();
+                showToast('success', 'Bulk Delete', `${deletedCount} leads deleted successfully.`);
+            };
+            
+            openModal('deleteModal');
+        }
+
+        // Toast Notifications
+        function showToast(type, title, message) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastId = 'toast-' + Date.now();
+            
+            const iconMap = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.id = toastId;
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="${iconMap[type]}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="closeToast('${toastId}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => closeToast(toastId), 5000);
+        }
+
+        function closeToast(toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.style.animation = 'toastSlideOut 0.3s ease';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
+        }
+
+        // Export Functions
+        function exportLeads() {
+            const csvContent = generateLeadsCSV();
+            downloadFile(csvContent, `leads-export-${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+            showToast('success', 'Export Complete', 'Leads have been exported to CSV.');
+        }
+
+        function generateLeadsCSV() {
+            const headers = ['ID', 'Name', 'Email', 'Phone', 'Source', 'Status', 'Score', 'Date', 'Notes'];
+            const csvRows = [headers.join(',')];
+            
+            filteredLeads.forEach(lead => {
+                const row = [
+                    lead.id,
+                    `"${lead.name}"`,
+                    lead.email,
+                    lead.phone || '',
+                    lead.source,
+                    lead.status,
+                    lead.score,
+                    lead.date,
+                    `"${(lead.notes || '').replace(/"/g, '""')}"`
+                ];
+                csvRows.push(row.join(','));
+            });
+            
+            return csvRows.join('\n');
+        }
+
+        // Email Campaign Management
+        function openEmailCampaign() {
+            if (selectedLeads.size > 0) {
+                document.getElementById('emailRecipients').value = 'selected';
+            }
+            openModal('emailModal');
+        }
+
+        function sendEmailCampaign() {
+            const subject = document.getElementById('emailSubject').value;
+            const content = document.getElementById('emailContent').value;
+            const recipients = document.getElementById('emailRecipients').value;
+            
+            if (!subject || !content) {
+                showToast('error', 'Validation Error', 'Please fill in all required fields.');
+                return;
+            }
+
+            // Simulate email sending
+            let recipientCount = 0;
+            switch (recipients) {
+                case 'all':
+                    recipientCount = allLeads.length;
+                    break;
+                case 'selected':
+                    recipientCount = selectedLeads.size;
+                    break;
+                default:
+                    recipientCount = allLeads.filter(l => l.status === recipients).length;
+            }
+
+            closeModal('emailModal');
+            showToast('success', 'Campaign Sent', `Email campaign sent to ${recipientCount} recipients.`);
+            
+            // Reset form
+            document.getElementById('emailForm').reset();
+        }
+
+        // Enhanced sidebar navigation
+        function initializeSidebarNavigation() {
+            const navLinks = document.querySelectorAll('.sidebar-nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.textContent.trim() === 'Email Campaigns') {
+                        e.preventDefault();
+                        openEmailCampaign();
+                    }
+                });
+            });
+        }
+
+        // Enhanced initialization (replacing the previous one)
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+            initializeCharts();
+            initializeTheme();
+            addMetricClickHandlers();
+            populateLeadsTable();
+            initializeSidebarNavigation();
+        });
 
         // Auto-refresh every 30 seconds
         setInterval(loadDashboardData, 30000);
