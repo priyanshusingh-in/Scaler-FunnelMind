@@ -21,6 +21,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
+// Test endpoint for Vercel
+app.get('/test', (req, res) => {
+    res.json({ 
+        message: 'Scaler-FunnelMind is working!',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development'
+    });
+});
+
 // MongoDB will handle data persistence when available
 // Fallback to in-memory storage when MongoDB is not connected
 let fallbackLeads = [];
@@ -1062,57 +1071,69 @@ app.get('/admin', async (req, res) => {
 });
 
 /**
- * Start the server
+ * Initialize database connection for Vercel
  */
-async function startServer() {
+async function initializeDatabase() {
     try {
-        // Connect to MongoDB
         await database.connect();
-        
-        // Start the Express server
-        app.listen(PORT, () => {
-            console.log(`🧠 Scaler-FunnelMind Server running on http://localhost:${PORT}`);
-            console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin`);
-            console.log(`🔧 Health Check: http://localhost:${PORT}/health`);
-            
-            // Log configuration status
-            console.log(`🤖 OpenAI API: ${OPENAI_API_KEY ? '✅ Configured' : '❌ Not configured (using fallbacks)'}`);
-            
-            // Show Gmail service status
-            const emailStatus = emailService.getStatus();
-            console.log(`📧 Gmail Service: ${emailStatus.configured ? '✅ Configured' : '❌ Not configured (using mock service)'}`);
-            if (!emailStatus.configured) {
-                console.log('   💡 Add GMAIL_USER and GMAIL_APP_PASSWORD to .env for real emails');
-            }
-            
-            // Show MongoDB status
-            const dbStatus = database.getConnectionStatus();
-            console.log(`📦 MongoDB: ${dbStatus.connected ? '✅ Connected' : '❌ Not connected'}`);
-            if (!dbStatus.connected) {
-                console.log('   💡 Add MONGODB_URI to .env for persistent data storage');
-            }
-        });
-        
+        console.log('📦 Database initialized for Vercel');
     } catch (error) {
-        console.error('Failed to start server:', error);
-        process.exit(1);
+        console.log('📦 Database initialization failed, using fallback storage');
     }
 }
 
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-    console.log('👋 Server shutting down gracefully...');
-    await database.disconnect();
-    process.exit(0);
-});
+// Initialize database when the module loads (for Vercel)
+initializeDatabase();
 
-process.on('SIGINT', async () => {
-    console.log('👋 Server shutting down gracefully...');
-    await database.disconnect();
-    process.exit(0);
-});
+// For local development, start the server
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+    async function startServer() {
+        try {
+            // Start the Express server
+            app.listen(PORT, () => {
+                console.log(`🧠 Scaler-FunnelMind Server running on http://localhost:${PORT}`);
+                console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin`);
+                console.log(`🔧 Health Check: http://localhost:${PORT}/health`);
+                
+                // Log configuration status
+                console.log(`🤖 OpenAI API: ${OPENAI_API_KEY ? '✅ Configured' : '❌ Not configured (using fallbacks)'}`);
+                
+                // Show Gmail service status
+                const emailStatus = emailService.getStatus();
+                console.log(`📧 Gmail Service: ${emailStatus.configured ? '✅ Configured' : '❌ Not configured (using mock service)'}`);
+                if (!emailStatus.configured) {
+                    console.log('   💡 Add GMAIL_USER and GMAIL_APP_PASSWORD to .env for real emails');
+                }
+                
+                // Show MongoDB status
+                const dbStatus = database.getConnectionStatus();
+                console.log(`📦 MongoDB: ${dbStatus.connected ? '✅ Connected' : '❌ Not connected'}`);
+                if (!dbStatus.connected) {
+                    console.log('   💡 Add MONGODB_URI to .env for persistent data storage');
+                }
+            });
+            
+        } catch (error) {
+            console.error('Failed to start server:', error);
+            process.exit(1);
+        }
+    }
 
-// Start the server
-startServer();
+    // Graceful shutdown
+    process.on('SIGTERM', async () => {
+        console.log('👋 Server shutting down gracefully...');
+        await database.disconnect();
+        process.exit(0);
+    });
+
+    process.on('SIGINT', async () => {
+        console.log('👋 Server shutting down gracefully...');
+        await database.disconnect();
+        process.exit(0);
+    });
+
+    // Start the server for local development
+    startServer();
+}
 
 module.exports = app;
