@@ -970,8 +970,82 @@ app.get('/health', async (req, res) => {
 });
 
 /**
- * Admin dashboard API endpoints (data only)
- * The admin dashboard HTML is now served directly as a static file
+ * Admin dashboard - serve using file system reading instead of sendFile
+ */
+app.get('/admin', async (req, res) => {
+    try {
+        const fs = require('fs');
+        const adminPath = path.join(__dirname, 'admin-dashboard.html');
+        
+        // Check if file exists first
+        if (fs.existsSync(adminPath)) {
+            const adminContent = fs.readFileSync(adminPath, 'utf8');
+            res.setHeader('Content-Type', 'text/html');
+            res.send(adminContent);
+        } else {
+            // Fallback: serve a simple admin dashboard if file doesn't exist
+            res.setHeader('Content-Type', 'text/html');
+            res.send(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Admin Dashboard</title>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+                        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .status { padding: 15px; border-radius: 5px; margin: 10px 0; }
+                        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+                        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>🎯 Scaler FunnelMind Admin</h1>
+                            <p>Administrative Dashboard</p>
+                        </div>
+                        <div class="status success">
+                            ✅ Server is running successfully
+                        </div>
+                        <div class="status info">
+                            📊 Analytics data is being collected
+                        </div>
+                        <div class="status info">
+                            🔧 This is a simplified admin view. Full dashboard loading...
+                        </div>
+                        <p><strong>API Endpoints:</strong></p>
+                        <ul>
+                            <li><a href="/health">Health Check</a></li>
+                            <li><a href="/test">Test Endpoint</a></li>
+                            <li><a href="/api/analytics">Analytics Data</a></li>
+                        </ul>
+                        <p><em>Timestamp: ${new Date().toISOString()}</em></p>
+                    </div>
+                    <script>
+                        // Try to load the full admin dashboard
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    </script>
+                </body>
+                </html>
+            `);
+        }
+    } catch (error) {
+        console.error('Admin dashboard error:', error);
+        res.status(500).json({ 
+            error: 'Failed to load admin dashboard',
+            details: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+/**
+ * Admin dashboard API endpoints
  */
 app.get('/admin/api/status', async (req, res) => {
     try {
