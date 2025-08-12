@@ -17,7 +17,6 @@ class Database {
 
             // Configure mongoose for serverless environments
             mongoose.set('bufferCommands', false);
-            mongoose.set('maxPoolSize', 1);
             
             await mongoose.connect(this.connectionString, {
                 // Serverless-friendly options
