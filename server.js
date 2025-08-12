@@ -270,12 +270,13 @@ app.get('/api/analytics', async (req, res) => {
             const recentLeads = await Lead.find()
                 .sort({ createdAt: -1 })
                 .limit(5)
-                .select('name email createdAt assessmentAnswers')
+                .select('name email phone createdAt assessmentAnswers')
                 .lean();
             
             const formattedRecentLeads = recentLeads.map(lead => ({
                 name: lead.name,
                 email: lead.email,
+                phone: lead.phone,
                 createdAt: lead.createdAt,
                 source: lead.assessmentAnswers?.context || 'unknown'
             }));
@@ -296,6 +297,7 @@ app.get('/api/analytics', async (req, res) => {
             const formattedRecentLeads = fallbackLeads.slice(-5).reverse().map(lead => ({
                 name: lead.name,
                 email: lead.email,
+                phone: lead.phone,
                 createdAt: lead.createdAt,
                 source: lead.assessmentAnswers?.context || 'unknown'
             }));
