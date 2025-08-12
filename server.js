@@ -317,6 +317,77 @@ app.get('/api/analytics', async (req, res) => {
 });
 
 /**
+ * Get Leads (simple API for admin dashboard)
+ * Supports optional pagination and basic search
+ */
+app.get('/api/leads', async (req, res) => {
+    try {
+        const { page = 1, limit = 100, q } = req.query;
+        const pageNumber = Math.max(parseInt(page, 10) || 1, 1);
+        const pageSize = Math.min(Math.max(parseInt(limit, 10) || 100, 1), 500);
+
+        const dbStatus = database.getConnectionStatus();
+
+        // Build optional search filter
+        const searchFilter = q
+            ? {
+                  $or: [
+                      { name: { $regex: q, $options: 'i' } },
+                      { email: { $regex: q, $options: 'i' } },
+                  ],
+              }
+            : {};
+
+        if (dbStatus.connected) {
+            const [leads, total] = await Promise.all([
+                Lead.find(searchFilter)
+                    .sort({ createdAt: -1 })
+                    .skip((pageNumber - 1) * pageSize)
+                    .limit(pageSize)
+                    .lean(),
+                Lead.countDocuments(searchFilter),
+            ]);
+
+            return res.json({
+                total,
+                page: pageNumber,
+                limit: pageSize,
+                leads,
+                storage: 'mongodb',
+            });
+        } else {
+            // Fallback to in-memory store
+            let leads = [...fallbackLeads];
+
+            if (q) {
+                const query = q.toLowerCase();
+                leads = leads.filter(
+                    (l) =>
+                        (l.name && l.name.toLowerCase().includes(query)) ||
+                        (l.email && l.email.toLowerCase().includes(query))
+                );
+            }
+
+            leads.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const total = leads.length;
+            const start = (pageNumber - 1) * pageSize;
+            const paginated = leads.slice(start, start + pageSize);
+
+            return res.json({
+                total,
+                page: pageNumber,
+                limit: pageSize,
+                leads: paginated,
+                storage: 'in-memory',
+            });
+        }
+    } catch (error) {
+        console.error('Leads fetch error:', error);
+        res.status(500).json({ error: 'Failed to fetch leads' });
+    }
+});
+
+/**
  * Email Automation Trigger
  */
 app.post('/api/email/trigger', async (req, res) => {
