@@ -10,11 +10,48 @@ let totalAssessmentSteps = 5;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-    setupEventListeners();
-    initializeTheme();
-    trackPageView();
+    console.log('🚀 DOM Content Loaded - Initializing app...');
+    try {
+        initializeApp();
+        setupEventListeners();
+        initializeTheme();
+        trackPageView();
+        console.log('✅ App initialization completed successfully');
+    } catch (error) {
+        console.error('❌ App initialization failed:', error);
+    }
 });
+
+// Fallback initialization in case DOMContentLoaded already fired
+if (document.readyState === 'loading') {
+    // DOM is still loading
+} else if (document.readyState === 'interactive') {
+    // DOM has finished loading but resources may still be loading
+    console.log('🔄 DOM Interactive - Initializing app...');
+    setTimeout(() => {
+        try {
+            initializeApp();
+            setupEventListeners();
+            initializeTheme();
+            trackPageView();
+            console.log('✅ App initialization completed successfully (interactive)');
+        } catch (error) {
+            console.error('❌ App initialization failed (interactive):', error);
+        }
+    }, 100);
+} else {
+    // DOM and resources have finished loading
+    console.log('🎯 DOM Complete - Initializing app...');
+    try {
+        initializeApp();
+        setupEventListeners();
+        initializeTheme();
+        trackPageView();
+        console.log('✅ App initialization completed successfully (complete)');
+    } catch (error) {
+        console.error('❌ App initialization failed (complete):', error);
+    }
+}
 
 function initializeApp() {
     console.log('🧠 Scaler-FunnelMind initializing...');
@@ -54,33 +91,123 @@ function setupEventListeners() {
 
     // Exit intent detection
     document.addEventListener('mouseleave', handleExitIntent);
+    
+    // Direct event listeners for CTA buttons as fallback
+    setupCTAEventListeners();
+}
+
+function setupCTAEventListeners() {
+    console.log('🔗 Setting up CTA event listeners...');
+    
+    // Find all buttons that should open assessment
+    const assessmentButtons = document.querySelectorAll(
+        'button[onclick*="openAssessment"], .cta-button, .course-cta, .nav-cta, .primary-cta, .secondary-cta'
+    );
+    
+    assessmentButtons.forEach((button, index) => {
+        // Add click event listener as fallback
+        button.addEventListener('click', function(e) {
+            console.log(`🔘 CTA Button clicked: ${button.textContent?.trim()} (${index})`);
+            
+            // Check if the button text suggests it should open assessment
+            const buttonText = button.textContent?.toLowerCase() || '';
+            const shouldOpenAssessment = 
+                buttonText.includes('assessment') || 
+                buttonText.includes('journey') ||
+                buttonText.includes('started') ||
+                buttonText.includes('get started') ||
+                buttonText.includes('learn more') ||
+                buttonText.includes('explore') ||
+                button.classList.contains('nav-cta') ||
+                button.classList.contains('primary-cta') ||
+                button.classList.contains('course-cta');
+            
+            if (shouldOpenAssessment && typeof window.openAssessment === 'function') {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🚀 Triggering assessment via event listener');
+                
+                // Determine context based on button
+                let context = 'general';
+                if (button.classList.contains('nav-cta')) context = 'nav';
+                else if (button.classList.contains('course-cta')) context = 'course';
+                else if (button.classList.contains('primary-cta')) context = 'hero';
+                
+                window.openAssessment(context);
+            }
+        });
+    });
+    
+    console.log(`✅ Added event listeners to ${assessmentButtons.length} CTA buttons`);
+    
+    // Special handling for mobile menu toggle
+    const mobileMenuButton = document.querySelector('.mobile-menu-toggle');
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', function(e) {
+            console.log('📱 Mobile menu button clicked');
+            if (typeof window.toggleMobileMenu === 'function') {
+                e.preventDefault();
+                window.toggleMobileMenu();
+            }
+        });
+    }
+    
+    // Special handling for theme toggle
+    const themeButton = document.querySelector('.theme-toggle');
+    if (themeButton) {
+        themeButton.addEventListener('click', function(e) {
+            console.log('🎨 Theme toggle button clicked');
+            if (typeof window.toggleTheme === 'function') {
+                e.preventDefault();
+                window.toggleTheme();
+            }
+        });
+    }
 }
 
 // Assessment Flow Functions
 function openAssessment(context = 'general') {
-    const modal = document.getElementById('assessment-modal');
-    modal.style.display = 'block';
-    modal.setAttribute('aria-hidden', 'false');
+    console.log(`🎯 Opening assessment with context: ${context}`);
     
-    // Reset assessment
-    currentAssessmentStep = 1;
-    assessmentAnswers = { context };
-    
-    // Show first step
-    showAssessmentStep(1);
-    updateAssessmentProgress();
-    
-    // Track event
-    trackEvent('assessment_started', { context });
-    
-    // Add body class to prevent scrolling
-    document.body.style.overflow = 'hidden';
-    
-    // Focus on modal for screen readers
-    modal.focus();
-    
-    // Trap focus within modal
-    trapFocus(modal);
+    try {
+        const modal = document.getElementById('assessment-modal');
+        if (!modal) {
+            console.error('❌ Assessment modal not found');
+            alert('Assessment is temporarily unavailable. Please try refreshing the page.');
+            return;
+        }
+        
+        console.log('✅ Assessment modal found, opening...');
+        
+        modal.style.display = 'block';
+        modal.setAttribute('aria-hidden', 'false');
+        
+        // Reset assessment
+        currentAssessmentStep = 1;
+        assessmentAnswers = { context };
+        
+        // Show first step
+        showAssessmentStep(1);
+        updateAssessmentProgress();
+        
+        // Track event
+        trackEvent('assessment_started', { context });
+        
+        // Add body class to prevent scrolling
+        document.body.style.overflow = 'hidden';
+        
+        // Focus on modal for screen readers
+        modal.focus();
+        
+        // Trap focus within modal
+        trapFocus(modal);
+        
+        console.log('✅ Assessment modal opened successfully');
+        
+    } catch (error) {
+        console.error('❌ Error opening assessment:', error);
+        alert('There was an error opening the assessment. Please try refreshing the page.');
+    }
 }
 
 function closeAssessment() {
@@ -890,3 +1017,37 @@ window.trackEvent = trackEvent;
 window.toggleMobileMenu = toggleMobileMenu;
 window.toggleTheme = toggleTheme;
 window.scrollToForm = scrollToForm;
+
+// Debug function to verify all functions are available
+window.debugScaler = function() {
+    console.log('🔍 Scaler Debug Information:');
+    console.log('openAssessment:', typeof window.openAssessment);
+    console.log('closeAssessment:', typeof window.closeAssessment);
+    console.log('selectOption:', typeof window.selectOption);
+    console.log('toggleMobileMenu:', typeof window.toggleMobileMenu);
+    console.log('toggleTheme:', typeof window.toggleTheme);
+    console.log('Assessment modal exists:', !!document.getElementById('assessment-modal'));
+    console.log('Current DOM state:', document.readyState);
+    
+    // Test opening assessment
+    console.log('🧪 Testing assessment modal...');
+    if (typeof window.openAssessment === 'function') {
+        try {
+            window.openAssessment('debug');
+            console.log('✅ Assessment modal test successful');
+            // Close it immediately
+            setTimeout(() => {
+                if (typeof window.closeAssessment === 'function') {
+                    window.closeAssessment();
+                    console.log('✅ Assessment modal close test successful');
+                }
+            }, 100);
+        } catch (error) {
+            console.error('❌ Assessment modal test failed:', error);
+        }
+    } else {
+        console.error('❌ openAssessment function not available');
+    }
+};
+
+console.log('🔧 Scaler functions exported. Type debugScaler() in console to test functionality.');
