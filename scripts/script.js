@@ -107,6 +107,13 @@ function setupCTAEventListeners() {
     assessmentButtons.forEach((button, index) => {
         // Add click event listener as fallback
         button.addEventListener('click', function(e) {
+            // Do not hijack clicks inside the assessment modal or on submit buttons
+            const isInsideAssessmentModal = !!button.closest('#assessment-modal');
+            const isSubmitButton = (button.getAttribute('type') || '').toLowerCase() === 'submit';
+            if (isInsideAssessmentModal || isSubmitButton) {
+                return; // allow normal behavior (e.g., form submission)
+            }
+
             console.log(`🔘 CTA Button clicked: ${button.textContent?.trim()} (${index})`);
             
             // Check if the button text suggests it should open assessment
