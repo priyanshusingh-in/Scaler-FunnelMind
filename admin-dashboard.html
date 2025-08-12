@@ -1882,12 +1882,25 @@
 
             let leads = [];
             try {
+                console.log('🔍 Fetching leads from /api/leads...');
                 const res = await fetch('/api/leads?limit=200');
-                if (!res.ok) throw new Error('Failed');
+                console.log('📊 API Response status:', res.status);
+                
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    console.error('❌ API Error:', res.status, errorText);
+                    throw new Error(`API failed: ${res.status}`);
+                }
+                
                 const data = await res.json();
+                console.log('📋 API Response data:', data);
                 leads = Array.isArray(data.leads) ? data.leads : [];
+                console.log(`✅ Loaded ${leads.length} leads from API`);
             } catch (e) {
+                console.error('❌ Failed to fetch leads from API:', e);
+                console.log('🔄 Falling back to analytics data...');
                 leads = Array.isArray(dashboardData.recentLeads) ? dashboardData.recentLeads : [];
+                console.log(`📋 Using ${leads.length} fallback leads`);
             }
 
             tableBody.innerHTML = leads.map(lead => {

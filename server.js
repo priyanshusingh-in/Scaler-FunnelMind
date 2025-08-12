@@ -32,6 +32,32 @@ app.get('/test', (req, res) => {
     });
 });
 
+/**
+ * Debug endpoint to check MongoDB connection and data
+ */
+app.get('/debug/mongodb', async (req, res) => {
+    try {
+        await ensureDbConnection();
+        const dbStatus = database.getConnectionStatus();
+        const totalLeads = dbStatus.connected ? await Lead.countDocuments() : 0;
+        const sampleLeads = dbStatus.connected ? await Lead.find().limit(3).lean() : [];
+        
+        res.json({
+            database: dbStatus,
+            totalLeads,
+            sampleLeads,
+            fallbackLeadsCount: fallbackLeads.length,
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        res.status(500).json({
+            error: error.message,
+            database: database.getConnectionStatus(),
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 // MongoDB will handle data persistence when available
 // Fallback to in-memory storage when MongoDB is not connected
 let fallbackLeads = [];
@@ -330,6 +356,8 @@ app.get('/api/analytics', async (req, res) => {
  */
 app.get('/api/leads', async (req, res) => {
     try {
+        console.log('📋 /api/leads endpoint called');
+        
         // Ensure database connection for serverless
         await ensureDbConnection();
         
@@ -338,6 +366,7 @@ app.get('/api/leads', async (req, res) => {
         const pageSize = Math.min(Math.max(parseInt(limit, 10) || 100, 1), 500);
 
         const dbStatus = database.getConnectionStatus();
+        console.log('📊 Database status:', dbStatus);
 
         // Build optional search filter
         const searchFilter = q
@@ -350,6 +379,7 @@ app.get('/api/leads', async (req, res) => {
             : {};
 
         if (dbStatus.connected) {
+            console.log('✅ Using MongoDB for leads');
             const [leads, total] = await Promise.all([
                 Lead.find(searchFilter)
                     .sort({ createdAt: -1 })
@@ -359,6 +389,8 @@ app.get('/api/leads', async (req, res) => {
                 Lead.countDocuments(searchFilter),
             ]);
 
+            console.log(`📋 Found ${leads.length} leads in MongoDB (total: ${total})`);
+
             return res.json({
                 total,
                 page: pageNumber,
@@ -367,6 +399,7 @@ app.get('/api/leads', async (req, res) => {
                 storage: 'mongodb',
             });
         } else {
+            console.log('⚠️ Using in-memory fallback for leads');
             // Fallback to in-memory store
             let leads = [...fallbackLeads];
 
@@ -383,6 +416,8 @@ app.get('/api/leads', async (req, res) => {
             const total = leads.length;
             const start = (pageNumber - 1) * pageSize;
             const paginated = leads.slice(start, start + pageSize);
+
+            console.log(`📋 Using ${paginated.length} fallback leads (total: ${total})`);
 
             return res.json({
                 total,
