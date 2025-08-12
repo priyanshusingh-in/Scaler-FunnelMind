@@ -18,11 +18,12 @@ class Database {
             // Configure mongoose for serverless environments
             mongoose.set('bufferCommands', false);
             
+            console.log('📦 MongoDB: 🔄 Connecting...');
+            
             await mongoose.connect(this.connectionString, {
                 // Serverless-friendly options
                 serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
                 socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-                bufferMaxEntries: 0, // Disable mongoose buffering
                 bufferCommands: false, // Disable mongoose buffering
                 maxPoolSize: 1, // Maintain only 1 connection in the pool
             });
@@ -72,9 +73,13 @@ class Database {
             2: 'connecting',
             3: 'disconnecting'
         };
+        
+        // For serverless, be more lenient with connection status
+        const isConnected = state === 1 || (state === 2 && this.isConnected);
+        
         return {
             state: states[state] || 'unknown',
-            connected: state === 1 && this.isConnected
+            connected: isConnected
         };
     }
 }

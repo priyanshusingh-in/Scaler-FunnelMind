@@ -1148,6 +1148,7 @@ app.get('/admin/api/status', async (req, res) => {
  */
 async function initializeDatabase() {
     try {
+        console.log('📦 Initializing database connection...');
         await database.connect();
         console.log('📦 Database initialized for Vercel');
     } catch (error) {
@@ -1167,7 +1168,10 @@ async function ensureDbConnection() {
 }
 
 // Initialize database when the module loads (for Vercel)
-initializeDatabase();
+// Use setTimeout to ensure proper initialization order
+setTimeout(() => {
+    initializeDatabase();
+}, 100);
 
 // For local development, start the server
 if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
