@@ -13,7 +13,7 @@
     },
     {
       "src": "/admin$",
-      "dest": "/server.js"
+      "dest": "/admin-dashboard.html"
     },
     {
       "src": "/health$",

@@ -970,15 +970,20 @@ app.get('/health', async (req, res) => {
 });
 
 /**
- * Admin dashboard (modern interactive dashboard)
+ * Admin dashboard API endpoints (data only)
+ * The admin dashboard HTML is now served directly as a static file
  */
-app.get('/admin', async (req, res) => {
+app.get('/admin/api/status', async (req, res) => {
     try {
-        // Serve the modern admin dashboard HTML file
-        res.sendFile(path.join(__dirname, 'admin-dashboard.html'));
+        const dbStatus = database.getConnectionStatus();
+        res.json({
+            status: 'ok',
+            database: dbStatus,
+            timestamp: new Date().toISOString()
+        });
     } catch (error) {
-        console.error('Admin dashboard error:', error);
-        res.status(500).send('<h1>Error loading dashboard</h1><p>Please check server logs.</p>');
+        console.error('Admin API error:', error);
+        res.status(500).json({ error: 'Failed to get admin status' });
     }
 });
 
