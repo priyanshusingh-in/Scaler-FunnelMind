@@ -299,7 +299,12 @@ class AIEngine {
         if (!recommendationsContainer) return;
 
         // Show loading state
-        recommendationsContainer.innerHTML = '<div class="loading-recommendations">Analyzing your interests...</div>';
+        recommendationsContainer.innerHTML = `
+            <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Analyzing your interests...</div>
+            </div>
+        `;
 
         try {
             const recommendations = await this.generateCourseRecommendations();

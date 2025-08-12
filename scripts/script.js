@@ -295,7 +295,12 @@ async function showAssessmentResults() {
     
     // Generate AI recommendation
     const resultContainer = document.getElementById('recommendation-result');
-    resultContainer.innerHTML = '<div class="loading">Generating your personalized recommendation...</div>';
+    resultContainer.innerHTML = `
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Generating your personalized recommendation...</div>
+        </div>
+    `;
     
     try {
         if (window.aiEngine && window.aiEngine.isInitialized) {
