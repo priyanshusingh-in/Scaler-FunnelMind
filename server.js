@@ -192,6 +192,9 @@ function getFallbackAIResponse(type) {
  */
 app.post('/api/leads', async (req, res) => {
     try {
+        // Ensure database connection for serverless
+        await ensureDbConnection();
+        
         // Validate required fields
         const requiredFields = ['name', 'email'];
         for (const field of requiredFields) {
@@ -260,6 +263,9 @@ app.post('/api/leads', async (req, res) => {
  */
 app.get('/api/analytics', async (req, res) => {
     try {
+        // Ensure database connection for serverless
+        await ensureDbConnection();
+        
         const dbStatus = database.getConnectionStatus();
         let enhancedAnalytics;
         
@@ -324,6 +330,9 @@ app.get('/api/analytics', async (req, res) => {
  */
 app.get('/api/leads', async (req, res) => {
     try {
+        // Ensure database connection for serverless
+        await ensureDbConnection();
+        
         const { page = 1, limit = 100, q } = req.query;
         const pageNumber = Math.max(parseInt(page, 10) || 1, 1);
         const pageSize = Math.min(Math.max(parseInt(limit, 10) || 100, 1), 500);
@@ -1143,6 +1152,17 @@ async function initializeDatabase() {
         console.log('📦 Database initialized for Vercel');
     } catch (error) {
         console.log('📦 Database initialization failed, using fallback storage');
+    }
+}
+
+/**
+ * Ensure database connection before processing requests (for serverless)
+ */
+async function ensureDbConnection() {
+    const status = database.getConnectionStatus();
+    if (!status.connected && process.env.MONGODB_URI) {
+        console.log('📦 Reconnecting to MongoDB...');
+        await database.connect();
     }
 }
 
